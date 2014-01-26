@@ -22,7 +22,7 @@ new SimGroup(MissionGroup) {
       canSaveDynamicFields = "1";
          desc0 = "A test level for Physics Cloth Plane";
          enabled = "1";
-         levelName = "2: Test ClothPlane";
+         levelName = "2: Cloth Plane";
    };
    new SkyBox(theSky) {
       Material = "BlackSkyMat";

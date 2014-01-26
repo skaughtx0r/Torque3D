@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
-// Copyright (c) 2014 Andrew MacIntyre
-//				 Aldyre Studios - aldyre.com
+// Authors: 
+//		Andrew MacIntyre - Aldyre Studios - aldyre.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
@@ -63,10 +63,7 @@ public:
     Px3ClothPlane();
     virtual ~Px3ClothPlane();
 
-    DECLARE_CONOBJECT( Px3ClothPlane );      
-
-    static Point3F mWindVelocity;
-    static void setWindVelocity( const Point3F &vel ){ mWindVelocity = vel; }
+    DECLARE_CONOBJECT( Px3ClothPlane );
 
     // SimObject
     virtual bool onAdd();
@@ -114,8 +111,6 @@ protected:
     SimObjectPtr<Material> mMaterial;
     BaseMatInstance *mMatInst;
 
-    String lookupName;
-
     /// 
     GFXVertexPNTT *mVertexRenderBuffer;
     U16 *mIndexRenderBuffer;
@@ -127,7 +122,6 @@ protected:
 
     U32 mMeshDirtyFlags;
     bool mIsVBDirty;
-
     GFXPrimitiveBufferHandle mPrimBuffer;
     GFXVertexBufferHandle<GFXVertexPNTT> mVB;
 
