@@ -22,7 +22,7 @@ new SimGroup(MissionGroup) {
       canSaveDynamicFields = "1";
          desc0 = "Test Physics Cubes";
          enabled = "1";
-         levelName = "Test Cubes";
+         levelName = "1: Test Cubes";
    };
    new SkyBox(theSky) {
       Material = "BlackSkyMat";
