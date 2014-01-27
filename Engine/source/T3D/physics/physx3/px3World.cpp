@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// Copyright (c) 2013 Timothy C Barnes
+// Copyright (c) 2012 GarageGames, LLC
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
@@ -462,12 +462,6 @@ void Px3World::setEnabled( bool enabled )
       getPhysicsResults();
 }
 
-void Px3World::onDebugDraw( const SceneRenderState *state )
-{
-   if ( !mScene )
-      return;
-}
-
 physx::PxController* Px3World::createController( physx::PxControllerDesc &desc )
 {
 	if ( !mScene )
@@ -479,5 +473,90 @@ physx::PxController* Px3World::createController( physx::PxControllerDesc &desc )
 	AssertFatal( pController, "Px3World::createController - Got a null!" );
 	return pController;
 }
+
+static ColorI getDebugColor( physx::PxU32 packed )
+{
+   ColorI col;
+   col.blue = (packed)&0xff;
+   col.green = (packed>>8)&0xff;
+   col.red = (packed>>16)&0xff;
+   col.alpha = 255;
+
+   return col;
+}
+
+void Px3World::onDebugDraw( const SceneRenderState *state )
+{
+   if ( !mScene )
+      return;
+
+   mScene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE,1.0f);
+   mScene->setVisualizationParameter(physx::PxVisualizationParameter::eBODY_AXES,1.0f);
+   mScene->setVisualizationParameter(physx::PxVisualizationParameter::eCOLLISION_SHAPES,1.0f);
+
+   const physx::PxRenderBuffer *renderBuffer = &mScene->getRenderBuffer();
+
+   if(!renderBuffer)
+      return;
+
+   // Render points
+   {
+      physx::PxU32 numPoints = renderBuffer->getNbPoints();
+      const physx::PxDebugPoint *points = renderBuffer->getPoints();
+
+      PrimBuild::begin( GFXPointList, numPoints );
+      
+      while ( numPoints-- )
+      {
+         PrimBuild::color( getDebugColor(points->color) );
+         PrimBuild::vertex3fv(px3Cast<Point3F>(points->pos));
+         points++;
+      }
+
+      PrimBuild::end();
+   }
+
+   // Render lines
+   {
+      physx::PxU32 numLines = renderBuffer->getNbLines();
+      const physx::PxDebugLine *lines = renderBuffer->getLines();
+
+      PrimBuild::begin( GFXLineList, numLines * 2 );
+
+      while ( numLines-- )
+      {
+         PrimBuild::color( getDebugColor( lines->color0 ) );
+         PrimBuild::vertex3fv( px3Cast<Point3F>(lines->pos0));
+         PrimBuild::color( getDebugColor( lines->color1 ) );
+         PrimBuild::vertex3fv( px3Cast<Point3F>(lines->pos1));
+         lines++;
+      }
+
+      PrimBuild::end();
+   }
+
+   // Render triangles
+   {
+      physx::PxU32 numTris = renderBuffer->getNbTriangles();
+      const physx::PxDebugTriangle *triangles = renderBuffer->getTriangles();
+
+      PrimBuild::begin( GFXTriangleList, numTris * 3 );
+      
+      while ( numTris-- )
+      {
+         PrimBuild::color( getDebugColor( triangles->color0 ) );
+         PrimBuild::vertex3fv( px3Cast<Point3F>(triangles->pos0) );
+         PrimBuild::color( getDebugColor( triangles->color1 ) );
+         PrimBuild::vertex3fv( px3Cast<Point3F>(triangles->pos1));
+         PrimBuild::color( getDebugColor( triangles->color2 ) );
+         PrimBuild::vertex3fv( px3Cast<Point3F>(triangles->pos2) );
+         triangles++;
+      }
+
+      PrimBuild::end();
+   }
+
+}
+
 
 

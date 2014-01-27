@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// Copyright (c) 2013 Timothy C Barnes
+// Copyright (c) 2012 GarageGames, LLC
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
@@ -56,7 +56,7 @@ void Px3Body::_releaseActor()
 
    mActor->userData = NULL;
 
-  mActor->release();
+   mActor->release();
    mActor = NULL;
    mBodyFlags = 0;
 
@@ -158,8 +158,6 @@ bool Px3Body::init(   PhysicsCollision *shape,
    mUserData.setObject( obj );
    mUserData.setBody( this );
    mActor->userData = &mUserData;
-
-   physx::PxSetGroupCollisionFlag(1,16,false);//disable collision for tank armor and regualr collision items
 
    return true;
 }

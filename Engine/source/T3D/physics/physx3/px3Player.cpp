@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// Copyright (c) 2013 Timothy C Barnes
+// Copyright (c) 2012 GarageGames, LLC
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
@@ -36,7 +36,7 @@ Px3Player::Px3Player()
       mObject( NULL ),
       mSkinWidth( 0.1f ),
       mOriginOffset( 0.0f ),
-	  mElapsed(0)
+      mElapsed(0)
 {
    PHYSICSMGR->getPhysicsResetSignal().notify( this, &Px3Player::_onPhysicsReset );
 }
@@ -68,7 +68,7 @@ void Px3Player::init( const char *type,
    AssertFatal( world, "Px3Player::init - Got a null world!" );
    AssertFatal( dynamic_cast<Px3World*>( world ), "Px3Player::init - The world is the wrong type!" );
 
-      // Cleanup any previous controller.
+   // Cleanup any previous controller.
    _releaseController();
 
    mObject = obj;
@@ -314,6 +314,7 @@ MatrixF& Px3Player::getTransform( MatrixF *outMatrix )
 
 void Px3Player::setScale( const Point3F &scale )
 {
+   //Ignored
 }
 
 Box3F Px3Player::getWorldBounds()
