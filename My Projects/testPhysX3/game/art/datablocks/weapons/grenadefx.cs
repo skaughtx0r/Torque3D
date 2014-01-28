@@ -888,7 +888,7 @@ datablock ProjectileData(GrenadeLauncherProjectile)
    directDamage = 30;
    radiusDamage = 30;
    damageRadius = 5;
-   areaImpulse = 2000;
+   areaImpulse = 20;
 
    explosion = GrenadeLauncherExplosion;
    waterExplosion = GrenadeLauncherWaterExplosion;
