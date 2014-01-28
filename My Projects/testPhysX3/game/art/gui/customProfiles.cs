@@ -24,3 +24,14 @@
 // This is the default save location for any GuiProfiles created in the
 // Gui Editor
 // ----------------------------------------------------------------------------
+
+// andrewmac: FPS Text
+singleton GuiControlProfile(GuiTextFPS : GuiTextProfile)
+{
+   fillColor = "17 17 17 255";
+   border = "0";
+   fontType = "Arial Bold";
+   fontSize = "20";
+   fontColors[0] = "221 221 221 255";
+   fontColor = "221 221 221 255";
+};
