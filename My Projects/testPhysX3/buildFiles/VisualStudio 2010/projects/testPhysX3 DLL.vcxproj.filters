@@ -356,6 +356,9 @@
     <Filter Include="Source Files\Engine\T3D\physics\physx3\Particles">
       <UniqueIdentifier>{eeaa7ae6-5352-44f2-980f-d118948015ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Engine\T3D\physics\physx3\Cloth">
+      <UniqueIdentifier>{87d7fc14-08e3-4044-b8c9-aceffcad9d08}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Torque.rc">
@@ -2835,14 +2838,17 @@
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\px3World.cpp">
       <Filter>Source Files\Engine\T3D\physics\physx3</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\px3ClothPlane.cpp">
-      <Filter>Source Files\Engine\T3D\physics\physx3</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\Particles\px3ParticleEmitter.cpp">
       <Filter>Source Files\Engine\T3D\physics\physx3\Particles</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\Particles\px3ParticleSystem.cpp">
       <Filter>Source Files\Engine\T3D\physics\physx3\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\Cloth\px3ClothPlane.cpp">
+      <Filter>Source Files\Engine\T3D\physics\physx3\Cloth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\Cloth\Px3ClothShape.cpp">
+      <Filter>Source Files\Engine\T3D\physics\physx3\Cloth</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5345,14 +5351,17 @@
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\px3World.h">
       <Filter>Source Files\Engine\T3D\physics\physx3</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\px3ClothPlane.h">
-      <Filter>Source Files\Engine\T3D\physics\physx3</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\Particles\px3ParticleEmitter.h">
       <Filter>Source Files\Engine\T3D\physics\physx3\Particles</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\Particles\px3ParticleSystem.h">
       <Filter>Source Files\Engine\T3D\physics\physx3\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\Cloth\px3ClothPlane.h">
+      <Filter>Source Files\Engine\T3D\physics\physx3\Cloth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\Cloth\Px3ClothShape.h">
+      <Filter>Source Files\Engine\T3D\physics\physx3\Cloth</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

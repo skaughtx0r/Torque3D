@@ -269,10 +269,11 @@
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\pathCamera.h" />
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physicalZone.cpp" />
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physicalZone.h" />
+    <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\Cloth\px3ClothPlane.cpp" />
+    <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\Cloth\Px3ClothShape.cpp" />
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\Particles\px3ParticleEmitter.cpp" />
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\Particles\px3ParticleSystem.cpp" />
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\px3Body.cpp" />
-    <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\px3ClothPlane.cpp" />
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\px3Collision.cpp" />
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\px3Player.cpp" />
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\px3Plugin.cpp" />
@@ -280,12 +281,13 @@
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\px3Utils.cpp" />
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\px3World.cpp" />
     <ClCompile Include="..\..\..\..\..\Engine\source\T3D\player.cpp" />
+    <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\Cloth\px3ClothPlane.h" />
+    <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\Cloth\Px3ClothShape.h" />
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\Particles\px3ParticleEmitter.h" />
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\Particles\px3ParticleSystem.h" />
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\px3.h" />
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\px3Body.h" />
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\px3Cast.h" />
-    <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\px3ClothPlane.h" />
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\px3Collision.h" />
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\px3Player.h" />
     <ClInclude Include="..\..\..\..\..\Engine\source\T3D\physics\physx3\px3Plugin.h" />
