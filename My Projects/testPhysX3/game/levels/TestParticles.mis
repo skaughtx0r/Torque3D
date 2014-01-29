@@ -22,7 +22,7 @@ new SimGroup(MissionGroup) {
       canSaveDynamicFields = "1";
          desc0 = "Testing PhysX enabled particles.";
          enabled = "1";
-         levelName = "3: Particles";
+         levelName = "4: Particles";
    };
    new SkyBox(theSky) {
       Material = "BlackSkyMat";

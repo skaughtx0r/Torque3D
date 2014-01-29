@@ -87,6 +87,12 @@ function EWCreatorWindow::init( %this )
       
    %this.endGroup();
    
+   // andrewmac: PhysX 3.3
+   %this.beginGroup( "PhysX 3.3" );
+      %this.registerMissionObject( "Px3ClothPlane",   "Cloth Plane" );
+      %this.registerMissionObject( "Px3ClothShape",   "Cloth Shape" );
+   %this.endGroup();
+
    %this.beginGroup( "System" );
    
       %this.registerMissionObject( "SimGroup" );
