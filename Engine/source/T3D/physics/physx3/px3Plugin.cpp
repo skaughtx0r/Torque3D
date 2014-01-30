@@ -32,7 +32,6 @@
 #include "T3D/gameBase/gameProcess.h"
 #include "core/util/tNamedFactory.h"
 
-
 AFTER_MODULE_INIT( Sim )
 {
    NamedFactory<PhysicsPlugin>::add( "PhysX3", &Px3Plugin::create );
@@ -223,6 +222,14 @@ PhysicsWorld* Px3Plugin::getWorld() const
 U32 Px3Plugin::getWorldCount() const
 { 
    return mPhysicsWorldLookup.size(); 
+}
+
+// andrewmac: Cloth
+PhysicsCloth* Px3Plugin::createCloth(TSShapeInstance* shapeInst, const MatrixF &transform)
+{
+    Px3ClothShape* cloth = new Px3ClothShape();
+    cloth->create(shapeInst, transform);
+    return cloth;
 }
 
 void Px3Plugin::_onDebugDrawEnabled( bool enabled )

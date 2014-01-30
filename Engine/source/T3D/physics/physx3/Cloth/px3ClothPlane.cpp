@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 // Authors: 
-//		Andrew MacIntyre - Aldyre Studios - aldyre.com
+//        Andrew MacIntyre - Aldyre Studios - aldyre.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
@@ -480,7 +480,7 @@ void Px3ClothPlane::_generateVertices()
     bool tRight = mAttachmentMask & BIT( 2 );
     bool tLeft =  mAttachmentMask & BIT( 3 );
 
-	// Generate list of vertices
+    // Generate list of vertices
     mVertices.clear();
     for (U32 i = 0; i < mPatchVerts.y; i++) 
     {        
@@ -698,7 +698,7 @@ void Px3ClothPlane::processTick( const Move *move )
         mCloth->setExternalAcceleration(windVec);
 
         // This is where the magic happens. We read back the vertex positions from PhysX
-		// and alter the positions in the vertex buffer.
+        // and alter the positions in the vertex buffer.
         PxClothParticleData* pData = mCloth->lockParticleData(PxDataAccessFlag::eREADABLE);
         if ( pData != NULL )
         {

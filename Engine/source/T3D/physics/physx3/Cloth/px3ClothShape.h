@@ -21,29 +21,16 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _Px3ClothShape_H_
-#define _Px3ClothShape_H_
+#ifndef _PX3CLOTHSHAPE_H_
+#define _PX3CLOTHSHAPE_H_
 
-#ifndef _PHYSX3_H_
 #include "T3D/physics/physx3/px3.h"
-#endif
-#ifndef _T3D_PHYSICSCOMMON_H_
-#include "T3D/physics/physicsCommon.h"
-#endif
-#ifndef _GAMEBASE_H_
-#include "T3D/gameBase/gameBase.h"
-#endif
-#ifndef _GFXPRIMITIVEBUFFER_H_
-#include "gfx/gfxPrimitiveBuffer.h"
-#endif
-#ifndef _GFXVERTEXBUFFER_H_
-#include "gfx/gfxVertexBuffer.h"
-#endif
-#ifndef _SCENEOBJECT_H_
-#include "scene/sceneObject.h"
-#endif
-#ifndef _TSSHAPEINSTANCE_H_
+#include "T3D/physics/physx3/px3World.h"
+#include "T3D/physics/physx3/px3Plugin.h"
 #include "ts/tsShapeInstance.h"
+
+#ifndef _ITICKABLE_H_
+    #include "core/iTickable.h"
 #endif
 
 class Px3World;
@@ -60,22 +47,9 @@ class Px3World;
 //     treated as fixed points.
 //-----------------------------------------------------------------------------
 
-class Px3ClothShape : public SceneObject
+class Px3ClothShape : public PhysicsCloth
 {
-   typedef SceneObject Parent;
-
-   // Network Mask
-   enum MaskBits 
-   {
-		TransformMask = Parent::NextFreeMask << 0,
-		UpdateMask    = Parent::NextFreeMask << 1,
-		NextFreeMask  = Parent::NextFreeMask << 2
-   };
-
-   // Static Shape
-   String            mShapeFile;
-   TSShapeInstance*  mShapeInstance;
-   Resource<TSShape> mShape;
+   TSShapeInstance*		mShapeInstance;
 
    U32 mDebugTick;
    
@@ -104,7 +78,7 @@ protected:
 	Vector<ClothMesh> mClothMeshes;
 
 	// Used to track last physics reset position.
-	MatrixF mResetXfm;
+	MatrixF mTransform;
 
 	// Cloth management functions.
 	void _createCloth(ClothMesh* cMesh);
@@ -120,18 +94,10 @@ public:
    // Physics Reset Callback Function.
    void onPhysicsReset( PhysicsResetEvent reset );
 
-   // Standard Torque Stuff, mainly used for the static portion.
-   DECLARE_CONOBJECT(Px3ClothShape);
-   static void initPersistFields();
-   virtual void inspectPostApply();
-   bool onAdd();
-   void onRemove();
-   void processTick( const Move *move );
+   bool create(TSShapeInstance* shapeInst, const MatrixF &transform);
+   void release();
+   void processTick();
    void setTransform( const MatrixF &mat );
-   U32 packUpdate( NetConnection *conn, U32 mask, BitStream *stream );
-   void unpackUpdate( NetConnection *conn, BitStream *stream );
-   void createShape();
-   void prepRenderImage( SceneRenderState *state );
 };
 
-#endif // _Px3ClothShape_H_
+#endif // _PX3CLOTHSHAPE_H_

@@ -25,19 +25,19 @@
 #define _Px3ClothPlane_H
 
 #ifndef _PHYSX3_H_
-#include "T3D/physics/physx3/px3.h"
+    #include "T3D/physics/physx3/px3.h"
 #endif
 #ifndef _T3D_PHYSICSCOMMON_H_
-#include "T3D/physics/physicsCommon.h"
+    #include "T3D/physics/physicsCommon.h"
 #endif
 #ifndef _GAMEBASE_H_
-#include "T3D/gameBase/gameBase.h"
+    #include "T3D/gameBase/gameBase.h"
 #endif
 #ifndef _GFXPRIMITIVEBUFFER_H_
-#include "gfx/gfxPrimitiveBuffer.h"
+    #include "gfx/gfxPrimitiveBuffer.h"
 #endif
 #ifndef _GFXVERTEXBUFFER_H_
-#include "gfx/gfxVertexBuffer.h"
+    #include "gfx/gfxVertexBuffer.h"
 #endif
 
 class Material;
