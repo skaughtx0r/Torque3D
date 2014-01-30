@@ -5,7 +5,13 @@ Sample Project Available At:
 
 https://github.com/andr3wmac/Torque3D-PhysX-Samples
 
-Setting up PhysX 3.3
+Setting up PhysX 3.3 using the Torque 3D Project Manager
+------------------------------------------
+ - You can find a pre compiled binary of the Torque3D Project Manager that supports PhysX 3.3 here: https://github.com/rextimmy/Torque3D-ProjectManager/tree/development
+ - For the Project Manager to find PhysX 3.3 SDK you have two options 1)Create an environment variable called TORQUE_PHYSX3_PATH and have that pointing to the location you installed the SDK 2)Place the SDK into a folder called <Program Files>/NVIDIA Corporation/NVIDIA PhysX SDK/v3.3.0_win
+ - Simply choose PhysX 3.3 physics from the modules list in the project manager and everything should be automatically taken care of.
+
+Setting up PhysX 3.3 manually
 ------------------------------------------
 
  - You will need the latest SDK from NVIDIA. This requires signing up for their developer program. If you don't already have access to their developer site then sign up now as access is not immediate.
