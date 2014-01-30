@@ -155,6 +155,7 @@ protected:
    TSThread*         mAmbientThread;
 
    // andrewmac: PhysX3 Cloth Add-on
+   bool              mEnablePhysicsRep;
    bool              mClothEnabled;
    PhysicsCloth*     mCloth;
    void              _enableCloth();

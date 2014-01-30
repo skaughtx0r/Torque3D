@@ -114,14 +114,16 @@ TSStatic::TSStatic()
    mMeshCulling = false;
    mUseOriginSort = false;
 
-   mPhysicsRep = NULL;
-
    mCollisionType = CollisionMesh;
    mDecalType = CollisionMesh;
 
-   // andrewmac : Cloth
+   // andrewmac : Cloth Options
    mCloth = NULL;
    mClothEnabled = false;
+
+   // andrewmac : Physics Options
+   mEnablePhysicsRep = true;
+   mPhysicsRep = NULL;
 }
 
 TSStatic::~TSStatic()
@@ -200,9 +202,14 @@ void TSStatic::initPersistFields()
    endGroup("Collision");
 
    addGroup("Cloth");
-      addField( "clothEnabled",  TypeBool,         Offset( mClothEnabled, TSStatic ), 
+      addField( "clothEnabled",      TypeBool,         Offset( mClothEnabled, TSStatic ), 
          "@brief Uses available physics engine to simulate cloth pieces.\n");
    endGroup("Cloth");
+
+   addGroup("Physics");
+      addField( "enablePhysicsRep",  TypeBool,         Offset( mEnablePhysicsRep, TSStatic ), 
+         "@brief Creates a representation of the object in the physics plugin.\n");
+   endGroup("Physics");
 
    addGroup("Debug");
 
@@ -378,6 +385,9 @@ void TSStatic::prepCollision()
 void TSStatic::_updatePhysics()
 {
    SAFE_DELETE( mPhysicsRep );
+
+   // andrewmac: Physics Options.
+   if ( !mEnablePhysicsRep ) return;
 
    if ( !PHYSICSMGR || mCollisionType == None )
       return;
@@ -659,6 +669,9 @@ U32 TSStatic::packUpdate(NetConnection *con, U32 mask, BitStream *stream)
    // andrewmac: Cloth
    stream->writeFlag( mClothEnabled );
 
+   // andrewmac: Physics Options
+   stream->writeFlag( mEnablePhysicsRep );
+
    return retMask;
 }
 
@@ -726,6 +739,14 @@ void TSStatic::unpackUpdate(NetConnection *con, BitStream *stream)
            _enableCloth();
        else
            _disableCloth();
+   }
+
+   // andrewmac: Physics Options
+   bool physicsRepFlag = stream->readFlag();
+   if ( physicsRepFlag != mEnablePhysicsRep )
+   {
+        mEnablePhysicsRep = physicsRepFlag;
+        _updatePhysics();
    }
    
    if ( isProperlyAdded() )
