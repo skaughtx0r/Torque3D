@@ -1,20 +1,22 @@
-Torque 3D v3.5 - Physx 3.3
+Torque 3D v3.5 - PhysX 3.3
 ==========================
 
-Check My Projects\testPhysx3 for an example project showcasing PhysX 3.3 features.
+Sample Project Available At:
+
+https://github.com/andr3wmac/Torque3D-PhysX-Samples
 
 Setting up PhysX 3.3
 ------------------------------------------
 
- - You will need the latest SDK from nVidia. This requires signing up for their developer program. If you don't already have access to their developer site then sign up now as access is not immediate.
+ - You will need the latest SDK from NVIDIA. This requires signing up for their developer program. If you don't already have access to their developer site then sign up now as access is not immediate.
  - Set up a standard Torque3D project, don't include any PhysX or Bullet, just regular Torque Physics in project manager options (if you're using it)
  - Generate Projects and open the source code in Visual Studio ( or the IDE of your choice )
  - In the solution explorer in the DLL for your project you should find Source Files -> Engine -> T3D -> physics
  - Add a new filter "physx3" and then right click on it and add existing item
  - Add all the files found under Engine\Source\T3D\physics\physx3\
  - Now you need to add the PhysX SDK. 
- - Under the properties for the DLL project, under Linker -> Additional Library Directories add the lib\win32 directory for the Physx 3.3 SDK. For example, mine is in: C:\Program Files (x86)\NVIDIA Corporation\NVIDIA PhysX SDK\v3.3.0_win\Lib\win32
- - In the same window under C/C++ you should see Additional Include Directories, you need to add the Include directory for the Physx 3.3 SDK. For example, mine is in: C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v3.3.0_win\Include
+ - Under the properties for the DLL project, under Linker -> Additional Library Directories add the lib\win32 directory for the PhysX 3.3 SDK. For example, mine is in: C:\Program Files (x86)\NVIDIA Corporation\NVIDIA PhysX SDK\v3.3.0_win\Lib\win32
+ - In the same window under C/C++ you should see Additional Include Directories, you need to add the Include directory for the PhysX 3.3 SDK. For example, mine is in: C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v3.3.0_win\Include
  - You should now be able to compile now without any issues.
 
 Running a project
@@ -33,4 +35,4 @@ Running a project
    4. PhysX3CommonCHECKED_x86.dll
    5. PhysX3CharacterKinematicCHECKED_x86.dll
  
-Place these files along side the exe and this should get you up and running. Check My Projects/testPhysX3 for reference.
+Place these files along side the exe and this should get you up and running.
