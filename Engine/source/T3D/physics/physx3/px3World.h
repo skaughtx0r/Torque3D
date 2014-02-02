@@ -69,6 +69,11 @@ protected:
 	static physx::PxProfileZoneManager* smProfileZoneManager;
 	static physx::PxDefaultCpuDispatcher* smCpuDispatcher;
 	static physx::PxVisualDebuggerConnection* smPvdConnection;
+   // Only cloth and particles are GPU accelerated and also only
+   // available on NVidia hardware on Windows platforms.
+#ifdef TORQUE_OS_WIN32
+   static physx::PxCudaContextManager* smCudaContextManager;
+#endif
 
 	F32 mAccumulator;
 	bool _simulate(const F32 dt);

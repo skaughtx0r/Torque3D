@@ -83,14 +83,14 @@ beginModule( 'physX3' );
 
    // Libs
    addProjectLibDir( $PHYSX3_SDK_PATH . "/Lib/win32" );
-   addProjectLibInput( "PhysX3_x86.lib","PhysX3DEBUG_x86.lib" );
-   addProjectLibInput( "PhysX3Common_x86.lib","PhysX3CommonDEBUG_x86.lib");
-   addProjectLibInput( "PhysX3Extensions.lib","PhysX3ExtensionsDEBUG.lib" );
-   addProjectLibInput( "PhysX3Cooking_x86.lib","PhysX3CookingDEBUG_x86.lib");
-   addProjectLibInput( "PxTask.lib","PxTaskDEBUG.lib" );
-   addProjectLibInput( "PhysX3CharacterKinematic_x86.lib","PhysX3CharacterKinematicDEBUG_x86.lib" );
-   addProjectLibInput( "PhysXVisualDebuggerSDK.lib", "PhysXVisualDebuggerSDKDEBUG.lib");
-   addProjectLibInput( "PhysXProfileSDK.lib", "PhysXProfileSDKDEBUG.lib");
+   addProjectLibInput( "PhysX3_x86.lib","PhysX3CHECKED_x86.lib" );
+   addProjectLibInput( "PhysX3Common_x86.lib","PhysX3CommonCHECKED_x86.lib");
+   addProjectLibInput( "PhysX3Extensions.lib","PhysX3ExtensionsCHECKED.lib" );
+   addProjectLibInput( "PhysX3Cooking_x86.lib","PhysX3CookingCHECKED_x86.lib");
+   addProjectLibInput( "PxTask.lib","PxTaskCHECKED.lib" );
+   addProjectLibInput( "PhysX3CharacterKinematic_x86.lib","PhysX3CharacterKinematicCHECKED_x86.lib" );
+   addProjectLibInput( "PhysXVisualDebuggerSDK.lib", "PhysXVisualDebuggerSDKCHECKED.lib");
+   addProjectLibInput( "PhysXProfileSDK.lib", "PhysXProfileSDKCHECKED.lib");
           
    // File Copy
    copyFileToProject( $PHYSX3_SDK_PATH . "/Bin/win32/nvToolsExt32_1.dll", "/game/nvToolsExt32_1.dll" );
@@ -102,7 +102,8 @@ beginModule( 'physX3' );
    copyFileToProject( $PHYSX3_SDK_PATH . "/Bin/win32/PhysX3CommonCHECKED_x86.dll",   "/game/PhysX3CommonCHECKED_x86.dll" );
    copyFileToProject( $PHYSX3_SDK_PATH . "/Bin/win32/PhysX3Cooking_x86.dll",   "/game/PhysX3Cooking_x86.dll" );
    copyFileToProject( $PHYSX3_SDK_PATH . "/Bin/win32/PhysX3CookingCHECKED_x86.dll",   "/game/PhysX3CookingCHECKED_x86.dll" );
-
+   copyFileToProject( $PHYSX3_SDK_PATH . "/Bin/win32/PhysX3Gpu_x86.dll",   "/game/PhysX3Gpu_x86.dll" );
+   copyFileToProject( $PHYSX3_SDK_PATH . "/Bin/win32/PhysX3GpuCHECKED_x86.dll",   "/game/PhysX3GpuCHECKED_x86.dll" );
 
 endModule();
 

@@ -95,6 +95,8 @@ protected:
 
     bool mCollisionEnabled;
     bool mWindEnabled;
+    //GPU hardware acceleration for supported GPU's
+    bool mGpuEnabled;
 
     F32 mThickness;
     F32 mSolverFrequency;

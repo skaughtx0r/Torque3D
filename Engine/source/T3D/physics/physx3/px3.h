@@ -48,30 +48,6 @@
 #include <common\PxIO.h> 
 
 
-//man i'm lazy :-), must remove this after testing
-#ifdef _MSC_VER
-#ifdef TORQUE_DEBUG
-	#pragma comment(lib, "PhysX3DEBUG_x86.lib")
-	#pragma comment(lib, "PhysX3CommonDEBUG_x86.lib")
-	#pragma comment(lib, "PhysX3ExtensionsDEBUG.lib")
-	#pragma comment(lib, "PhysX3CookingDEBUG_x86.lib")
-	#pragma comment(lib, "PxTaskDEBUG.lib")
-	#pragma comment(lib, "PhysX3CharacterKinematicDEBUG_x86.lib")
-	#pragma comment(lib, "PhysXVisualDebuggerSDKDEBUG.lib")
-	#pragma comment(lib, "PhysXProfileSDKDEBUG.lib")
-#else
-	#pragma comment(lib, "PhysX3_x86.lib")
-	#pragma comment(lib, "PhysX3Common_x86.lib")
-	#pragma comment(lib, "PhysX3Extensions.lib")
-	#pragma comment(lib, "PhysX3Cooking_x86.lib")
-	#pragma comment(lib, "PxTask.lib")
-	#pragma comment(lib, "PhysX3CharacterKinematic_x86.lib")
-	#pragma comment(lib, "PhysXVisualDebuggerSDK.lib")
-	#pragma comment(lib, "PhysXProfileSDK.lib")
-#endif
-#endif
-
-
 extern physx::PxPhysics* gPhysics3SDK;
 
 
