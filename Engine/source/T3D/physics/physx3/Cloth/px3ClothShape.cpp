@@ -225,8 +225,11 @@ void Px3ClothShape::_clearClothMeshes()
         _releaseCloth(cMesh);
 
         // Release Fabric.
-        cMesh->fabric->release();
-        cMesh->fabric = NULL;
+		if(cMesh->fabric)
+		{
+			cMesh->fabric->release();
+			cMesh->fabric = NULL;
+		}
     }
     mClothMeshes.clear();
 }
