@@ -24,6 +24,10 @@ Setting up PhysX 3.3 manually
  - Under the properties for the DLL project, under Linker -> Additional Library Directories add the lib\win32 directory for the PhysX 3.3 SDK. For example, mine is in: C:\Program Files (x86)\NVIDIA Corporation\NVIDIA PhysX SDK\v3.3.0_win\Lib\win32
  - In the same window under C/C++ you should see Additional Include Directories, you need to add the Include directory for the PhysX 3.3 SDK. For example, mine is in: C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v3.3.0_win\Include
  - You should now be able to compile now without any issues.
+ 
+ GPU Acceleration
+------------------------------------------
+PhysX 3.x only supports GPU acceleration of Cloth and Particles, everything else is done with the cpu. GPU acceleration is only available on Windows operating systems and with NVidia hardware. A full list of supported cards can be found here: http://www.geforce.com/hardware/technology/physx/supported-gpus
 
 Running a project
 ------------------------------------------
