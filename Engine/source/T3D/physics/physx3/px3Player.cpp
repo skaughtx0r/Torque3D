@@ -34,7 +34,7 @@ Px3Player::Px3Player()
       mController( NULL ),
       mWorld( NULL ),
       mObject( NULL ),
-      mSkinWidth( 0.1f ),
+      mSkinWidth( 0.05f ),
       mOriginOffset( 0.0f ),
       mElapsed(0)
 {
@@ -76,10 +76,12 @@ void Px3Player::init( const char *type,
    mOriginOffset = size.z * 0.5f;
 
 	physx::PxCapsuleControllerDesc desc;
-	desc.radius = getMax( size.x, size.y ) * 0.5f;
-	desc.height = size.z - ( desc.radius * 2.0f );
+   desc.contactOffset = mSkinWidth;
+   desc.radius = getMax( size.x, size.y ) * 0.5f;
+   desc.radius -= mSkinWidth;
+   desc.height = size.z - ( desc.radius * 2.0f );
+   desc.height -= mSkinWidth * 2.0f;
 	desc.climbingMode = physx::PxCapsuleClimbingMode::eCONSTRAINED;
-	//desc.nonWalkableMode = physx::PxCCTNonWalkableMode::eFORCE_SLIDING;//this makes it feel really bouncy when exceeding the maximum slope
 	desc.position.set( 0, 0, 0 );
 	desc.upDirection = physx::PxVec3(0,0,1);
 	desc.reportCallback = this;
@@ -109,11 +111,15 @@ void Px3Player::init( const char *type,
 }
 
 void Px3Player::_onStaticChanged()
-{   
+{
+   if(mController)
+      mController->invalidateCache();
 }
 
 void Px3Player::_onPhysicsReset( PhysicsResetEvent reset )
 {
+   if(mController)
+      mController->invalidateCache();
 }
 
 Point3F Px3Player::move( const VectorF &disp, CollisionList &outCol )
@@ -144,7 +150,6 @@ Point3F Px3Player::move( const VectorF &disp, CollisionList &outCol )
    physx::PxControllerFilters filter;
    physx::PxFilterData data;
    data.word0=groups;
-   data.word1=0;
    filter.mFilterData = &data;
    filter.mFilterFlags = physx::PxSceneQueryFilterFlags(physx::PxControllerFlag::eCOLLISION_DOWN|physx::PxControllerFlag::eCOLLISION_SIDES|physx::PxControllerFlag::eCOLLISION_UP);
 
@@ -172,7 +177,7 @@ void Px3Player::onShapeHit( const physx::PxControllerShapeHit& hit )
    dMemset( &col, 0, sizeof( col ) );
 
    col.normal = px3Cast<Point3F>( hit.worldNormal );
-   col.point.set( hit.worldPos.x, hit.worldPos.y, hit.worldPos.z );
+   col.point = px3Cast<Point3F>( hit.worldPos );
    col.distance = hit.length;      
    if ( userData )
       col.object = userData->getObject();
@@ -219,27 +224,25 @@ void Px3Player::findContact(   SceneObject **contactObject,
    F32 halfSmallCapSize = halfCapSize * 0.8f;
    F32 diff = halfCapSize - halfSmallCapSize;
 
-   const F32 mSkinWidth = 0.1f;
-
-   F32 offsetDist = diff + mSkinWidth + 0.01f; 
-   physx::PxVec3 motion(0,0,-1);
-   motion.normalize();
+   F32 distance = diff + mSkinWidth + 0.01f; 
+   physx::PxVec3 dir(0,0,-1);
  
    physx::PxScene *scene = mWorld->getScene();
-   physx::PxHitFlags outFlags;
+   physx::PxHitFlags hitFlags(physx::PxHitFlag::eDEFAULT);
    physx::PxQueryFilterData filterData(physx::PxQueryFlag::eDYNAMIC|physx::PxQueryFlag::eSTATIC);
    filterData.data.word0 = PX3_DEFAULT;
-   physx::PxSweepBuffer sweepHit;
+   physx::PxSweepHit sweepHit;
    physx::PxRigidDynamic *actor= mController->getActor();
+   physx::PxU32 shapeIndex;
 
-   bool hit  = scene->sweep(mGeometry,actor->getGlobalPose(),motion,offsetDist,sweepHit,outFlags,filterData);
+   bool hit = physx::PxRigidBodyExt::linearSweepSingle(*actor,*scene,dir,distance,hitFlags,sweepHit,shapeIndex,filterData);
    if ( hit )
    {
-      PhysicsUserData *data = PhysicsUserData::cast( sweepHit.block.actor->userData);
+      PhysicsUserData *data = PhysicsUserData::cast( sweepHit.actor->userData);
       if ( data )
       {
          *contactObject = data->getObject();
-         *contactNormal = px3Cast<Point3F>( sweepHit.block.normal );
+         *contactNormal = px3Cast<Point3F>( sweepHit.normal );
       }
    }
 
@@ -255,7 +258,7 @@ void Px3Player::findContact(   SceneObject **contactObject,
 	hit = scene->overlap(mGeometry,actor->getGlobalPose(),hitBuffer,filterData);
    if(hit)
    {
-      for ( physx::PxI32 i = 0; i < hitBuffer.nbTouches; i++ )
+      for ( U32 i = 0; i < hitBuffer.nbTouches; i++ )
       {
          PhysicsUserData *data = PhysicsUserData::cast( hitBuffer.touches[i].actor->userData );
          if ( data )      

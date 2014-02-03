@@ -131,7 +131,6 @@ bool Px3World::restartSDK( bool destroyOnly, Px3World *clientWorld, Px3World *se
 	smErrorCallback  = new Px3ConsoleStream;
 	smFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, smMemoryAlloc, *smErrorCallback);
 	smProfileZoneManager = &physx::PxProfileZoneManager::createProfileZoneManager(smFoundation);
-	
 	gPhysics3SDK = PxCreatePhysics(PX_PHYSICS_VERSION, *smFoundation, physx::PxTolerancesScale(),memTrack,smProfileZoneManager);
 
 	if ( !gPhysics3SDK )

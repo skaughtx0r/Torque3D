@@ -252,7 +252,7 @@ PlayerData::PlayerData()
    firstPersonShadows = false;
 
    // andrewmac: Physics Collision Flag
-   physicsCollision = false;
+   physicsCollision = true;
 
    // Used for third person image rendering
    imageAnimPrefix = StringTable->insert("");

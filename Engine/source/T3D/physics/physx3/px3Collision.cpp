@@ -49,15 +49,12 @@ Px3Collision::~Px3Collision()
 	mColShapes.clear();
 }
 
-//this is borrowed from physx2 plugin, should just use PxPlaneGeometry
 void Px3Collision::addPlane( const PlaneF &plane )
 {
 	physx::PxVec3 pos = px3Cast<physx::PxVec3>(plane.getPosition());
 	Px3CollisionDesc *desc = new Px3CollisionDesc;
-	desc->pGeometry = new physx::PxBoxGeometry(10000.0f, 10000.0f, 100.0f);
-	physx::PxTransform pose = physx::PxTransform(physx::PxIDENTITY());
-	pose.p.z = -100;
-	desc->pose = pose;
+   desc->pGeometry = new physx::PxPlaneGeometry();
+   desc->pose = physx::PxTransform(pos, physx::PxQuat(physx::PxHalfPi, physx::PxVec3(0.0f, -1.0f, 0.0f)));
 	mColShapes.push_back(desc);
 }
 

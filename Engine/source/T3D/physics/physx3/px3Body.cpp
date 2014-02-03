@@ -101,12 +101,12 @@ bool Px3Body::init(   PhysicsCollision *shape,
    }
    else if ( mass > 0.0f )
    {
-	      mActor = gPhysics3SDK->createRigidDynamic(physx::PxTransform(physx::PxIDENTITY()));
+      mActor = gPhysics3SDK->createRigidDynamic(physx::PxTransform(physx::PxIDENTITY()));
    }
    else
    {
-	      mActor = gPhysics3SDK->createRigidStatic(physx::PxTransform(physx::PxIDENTITY()));
-		  mIsStatic = true;
+      mActor = gPhysics3SDK->createRigidStatic(physx::PxTransform(physx::PxIDENTITY()));
+      mIsStatic = true;
 	}
 
    mMaterial = gPhysics3SDK->createMaterial(0.6f,0.4f,0.1f);
@@ -123,9 +123,8 @@ bool Px3Body::init(   PhysicsCollision *shape,
 				Con::errorf("PhysX3 Dynamic Triangle Mesh is not supported.");
 			}
 	   }
-	   physx::PxShape * pshape = mActor->createShape(*desc->pGeometry,*mMaterial,desc->pose);
+	   physx::PxShape * pShape = mActor->createShape(*desc->pGeometry,*mMaterial,desc->pose);
 	   physx::PxFilterData colData;
-	   U32 filter1=0;
 	   if(isDebris)
 			colData.word0 = PX3_DEBRIS;
 	   else if(isTrigger)
@@ -133,10 +132,11 @@ bool Px3Body::init(   PhysicsCollision *shape,
 	   else
 		   colData.word0 = PX3_DEFAULT;
 
-	   colData.word1 = filter1;
-
-		pshape->setSimulationFilterData(colData);
-		pshape->setQueryFilterData(colData);
+      //set the skin width
+      pShape->setContactOffset(0.01f);
+      pShape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE,true);
+		pShape->setSimulationFilterData(colData);
+		pShape->setQueryFilterData(colData);
    }
    //this has to be set after creating the shape
    if ( mass > 0.0f )
@@ -168,11 +168,11 @@ void Px3Body::setMaterial(  F32 restitution,
 {
    AssertFatal( mActor, "Px3Body::setMaterial - The actor is null!" );
 
-     if ( isDynamic() )
-	 {
-		 physx::PxRigidDynamic *actor = mActor->is<physx::PxRigidDynamic>();
-		 actor->wakeUp();
-	 }
+   if ( isDynamic() )
+   {
+      physx::PxRigidDynamic *actor = mActor->is<physx::PxRigidDynamic>();
+      actor->wakeUp();
+   }
 
 	 mMaterial->setRestitution(restitution);
 	 mMaterial->setStaticFriction(staticFriction);
@@ -215,7 +215,7 @@ void Px3Body::getState( PhysicsState *outState )
    outState->linVelocity = px3Cast<Point3F>( actor->getLinearVelocity() ); 
    outState->angVelocity = px3Cast<Point3F>( actor->getAngularVelocity() );
    outState->sleeping = actor->isSleeping();
-  outState->momentum = px3Cast<Point3F>( (1.0f/actor->getMass()) * actor->getLinearVelocity() );//??
+   outState->momentum = px3Cast<Point3F>( (1.0f/actor->getMass()) * actor->getLinearVelocity() );//??
 
 }
 
@@ -254,7 +254,7 @@ void Px3Body::setAngVelocity( const Point3F &vel )
    AssertFatal( mActor, "Px3Body::setAngVelocity - The actor is null!" );
    AssertFatal( isDynamic(), "Px3Body::setAngVelocity - This call is only for dynamics!" );
 
-  physx::PxRigidDynamic *actor = mActor->is<physx::PxRigidDynamic>();
+   physx::PxRigidDynamic *actor = mActor->is<physx::PxRigidDynamic>();
    actor->setAngularVelocity(px3Cast<physx::PxVec3>( vel ) );
 }
 
@@ -263,7 +263,7 @@ Point3F Px3Body::getLinVelocity() const
    AssertFatal( mActor, "Px3Body::getLinVelocity - The actor is null!" );
    AssertFatal( isDynamic(), "Px3Body::getLinVelocity - This call is only for dynamics!" );
 
-  physx::PxRigidDynamic *actor = mActor->is<physx::PxRigidDynamic>();
+   physx::PxRigidDynamic *actor = mActor->is<physx::PxRigidDynamic>();
    return px3Cast<Point3F>( actor->getLinearVelocity() );
 }
 
