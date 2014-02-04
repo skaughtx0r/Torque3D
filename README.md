@@ -24,11 +24,20 @@ Setting up PhysX 3.3 manually
  - Under the properties for the DLL project, under Linker -> Additional Library Directories add the lib\win32 directory for the PhysX 3.3 SDK. For example, mine is in: C:\Program Files (x86)\NVIDIA Corporation\NVIDIA PhysX SDK\v3.3.0_win\Lib\win32
  - In the same window under C/C++ you should see Additional Include Directories, you need to add the Include directory for the PhysX 3.3 SDK. For example, mine is in: C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v3.3.0_win\Include
  - You should now be able to compile now without any issues.
+ - The following libraries will also be needed:
  
- GPU Acceleration
-------------------------------------------
-PhysX 3.x only supports GPU acceleration of Cloth and Particles, everything else is done with the cpu. GPU acceleration is only available on Windows operating systems and with NVidia hardware. A full list of supported cards can be found here: http://www.geforce.com/hardware/technology/physx/supported-gpus
+Release , Debug
+PhysX3_x86.lib,PhysX3CHECKED_x86.lib 
+PhysX3Common_x86.lib,PhysX3CommonCHECKED_x86.lib
+PhysX3Extensions.lib,PhysX3ExtensionsCHECKED.lib
+PhysX3Cooking_x86.lib,PhysX3CookingCHECKED_x86.lib
+PxTask.lib,PxTaskCHECKED.lib
+PhysX3CharacterKinematic_x86.lib,PhysX3CharacterKinematicCHECKED_x86.lib
+PhysXVisualDebuggerSDK.lib, PhysXVisualDebuggerSDKCHECKED.lib
+PhysXProfileSDK.lib, PhysXProfileSDKCHECKED.lib
 
+With debug build feel free to change CHECKED to DEBUG if you prefer but it will still require the CHECKED dll's though.
+ 
 Running a project
 ------------------------------------------
 
@@ -48,3 +57,7 @@ Running a project
    6. PhysX3GpuCHECKED_x86.dll
  
 Place these files along side the exe and this should get you up and running.
+
+GPU Acceleration
+------------------------------------------
+PhysX 3.x only supports GPU acceleration of Cloth, Particles and Fluids, everything else is done with the CPU. GPU acceleration is only available on Windows operating systems and with NVidia hardware. A full list of supported cards can be found here: http://www.geforce.com/hardware/technology/physx/supported-gpus
