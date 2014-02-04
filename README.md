@@ -29,14 +29,14 @@ The following libraries will also be needed:
  
 Release , Debug
 
-PhysX3_x86.lib,PhysX3CHECKED_x86.lib 
-PhysX3Common_x86.lib,PhysX3CommonCHECKED_x86.lib
-PhysX3Extensions.lib,PhysX3ExtensionsCHECKED.lib
-PhysX3Cooking_x86.lib,PhysX3CookingCHECKED_x86.lib
-PxTask.lib,PxTaskCHECKED.lib
-PhysX3CharacterKinematic_x86.lib,PhysX3CharacterKinematicCHECKED_x86.lib
-PhysXVisualDebuggerSDK.lib, PhysXVisualDebuggerSDKCHECKED.lib
-PhysXProfileSDK.lib, PhysXProfileSDKCHECKED.lib
+ - PhysX3_x86.lib,PhysX3CHECKED_x86.lib
+ - PhysX3Common_x86.lib,PhysX3CommonCHECKED_x86.lib
+ - PhysX3Extensions.lib,PhysX3ExtensionsCHECKED.lib
+ - PhysX3Cooking_x86.lib,PhysX3CookingCHECKED_x86.lib
+ - PxTask.lib,PxTaskCHECKED.lib
+ - PhysX3CharacterKinematic_x86.lib,PhysX3CharacterKinematicCHECKED_x86.lib
+ - PhysXVisualDebuggerSDK.lib, PhysXVisualDebuggerSDKCHECKED.lib
+ - PhysXProfileSDK.lib, PhysXProfileSDKCHECKED.lib
 
 With debug build feel free to change CHECKED to DEBUG if you prefer but it will still require the CHECKED dll's though.
  
