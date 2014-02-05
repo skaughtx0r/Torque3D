@@ -52,7 +52,9 @@ public:
       BF_KINEMATIC = BIT( 1 ),
 
       /// The body responds to contacts but does not push forces into others.
-      BF_DEBRIS = BIT( 2 )
+      BF_DEBRIS = BIT( 2 ),
+      /// Marks the body to have continuous collision detection enabled
+      BF_CCD = BIT( 3 )
    };
 
    /// Initialize the body with a collision shape 

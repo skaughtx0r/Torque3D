@@ -138,11 +138,16 @@ bool Px3Body::init(   PhysicsCollision *shape,
 		pShape->setSimulationFilterData(colData);
 		pShape->setQueryFilterData(colData);
    }
-   //this has to be set after creating the shape
+
+   //mass & intertia has to be set after creating the shape
    if ( mass > 0.0f )
    {
 		physx::PxRigidDynamic *actor = mActor->is<physx::PxRigidDynamic>();
 		physx::PxRigidBodyExt::setMassAndUpdateInertia(*actor,mass);
+      if(mBodyFlags & BF_CCD)
+         actor->setRigidBodyFlag(physx::PxRigidBodyFlag::eENABLE_CCD, true);
+      else
+         actor->setRigidBodyFlag(physx::PxRigidBodyFlag::eENABLE_CCD, false);
    }
 
     // This sucks, but it has to happen if we want

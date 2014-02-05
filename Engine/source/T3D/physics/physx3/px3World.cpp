@@ -29,6 +29,7 @@
 #include "T3D/physics/physx3/px3Stream.h"
 #include "T3D/physics/physicsUserData.h"
 
+#include "console/engineAPI.h"
 #include "core/stream/bitStream.h"
 #include "platform/profiler.h"
 #include "sim/netConnection.h"
@@ -52,10 +53,24 @@ physx::PxCudaContextManager* Px3World::smCudaContextManager=NULL;
 Px3ConsoleStream* Px3World::smErrorCallback = NULL;
 physx::PxVisualDebuggerConnection* Px3World::smPvdConnection=NULL;
 physx::PxDefaultAllocator Px3World::smMemoryAlloc;
+//Physics timing
+F32 Px3World::smPhysicsStepTime = 1.0f/30.0f;
+U32 Px3World::smPhysicsMaxIterations = 4;
 
-static const F32 PhysicsStepTime =(F32)TickMs/1000.f;
-static const U32 PhysicsMaxIterations = 4;
-static const F32 PhysicsMaxTimeStep = PhysicsStepTime/2;
+//filter shader with support for CCD pairs
+static physx::PxFilterFlags sCcdFilterShader(
+        physx::PxFilterObjectAttributes attributes0,
+        physx::PxFilterData filterData0,
+        physx::PxFilterObjectAttributes attributes1,
+        physx::PxFilterData filterData1,
+        physx::PxPairFlags& pairFlags,
+        const void* constantBlock,
+        physx::PxU32 constantBlockSize)
+{
+        pairFlags = physx::PxPairFlag::eRESOLVE_CONTACTS;
+        pairFlags |= physx::PxPairFlag::eCCD_LINEAR;
+        return physx::PxFilterFlags();
+}
 
 
 
@@ -78,6 +93,12 @@ Px3World::~Px3World()
 physx::PxCooking *Px3World::getCooking()
 {
 	return smCooking;
+}
+
+void Px3World::setTiming(F32 stepTime,U32 maxIterations)
+{
+   smPhysicsStepTime = stepTime;
+   smPhysicsMaxIterations = maxIterations;
 }
 
 bool Px3World::restartSDK( bool destroyOnly, Px3World *clientWorld, Px3World *serverWorld)
@@ -233,7 +254,7 @@ bool Px3World::initWorld( bool isServer, ProcessList *processList )
 	mIsServer = isServer;
 	
 	physx::PxSceneDesc sceneDesc(gPhysics3SDK->getTolerancesScale());
-	
+
 	sceneDesc.gravity = px3Cast<physx::PxVec3>(mGravity);
 	sceneDesc.userData = this;
 	if(!sceneDesc.cpuDispatcher)
@@ -253,11 +274,12 @@ bool Px3World::initWorld( bool isServer, ProcessList *processList )
       }
    }
 #endif
+   	
+   sceneDesc.flags |= physx::PxSceneFlag::eENABLE_CCD;
+   sceneDesc.flags |= physx::PxSceneFlag::eENABLE_ACTIVETRANSFORMS;
 
-	if(!sceneDesc.filterShader)
-		sceneDesc.filterShader  = physx::PxDefaultSimulationFilterShader;
-	
-	sceneDesc.flags|= physx::PxSceneFlag::eENABLE_ACTIVETRANSFORMS;
+   sceneDesc.filterShader  = sCcdFilterShader;
+
 	mScene = gPhysics3SDK->createScene(sceneDesc);
 
 	physx::PxDominanceGroupPair debrisDominance( 0.0f, 1.0f );
@@ -272,27 +294,26 @@ bool Px3World::initWorld( bool isServer, ProcessList *processList )
 
 	return true;
 }
-
+// Most of this borrowed from bullet physics library, see btDiscreteDynamicsWorld.cpp
 bool Px3World::_simulate(const F32 dt)
 {
    int numSimulationSubSteps = 0;
    //fixed timestep with interpolation
    mAccumulator += dt;
-   if (mAccumulator >= PhysicsMaxTimeStep)
+   if (mAccumulator >= smPhysicsStepTime)
    {
-      numSimulationSubSteps = int(mAccumulator / PhysicsMaxTimeStep);
-      mAccumulator -= numSimulationSubSteps * PhysicsMaxTimeStep;
+      numSimulationSubSteps = int(mAccumulator / smPhysicsStepTime);
+      mAccumulator -= numSimulationSubSteps * smPhysicsStepTime;
    }
 	if (numSimulationSubSteps)
 	{
 		//clamp the number of substeps, to prevent simulation grinding spiralling down to a halt
-		int clampedSimulationSteps = (numSimulationSubSteps > PhysicsMaxIterations)? PhysicsMaxIterations : numSimulationSubSteps;
+		int clampedSimulationSteps = (numSimulationSubSteps > smPhysicsMaxIterations)? smPhysicsMaxIterations : numSimulationSubSteps;
 		
 		for (int i=0;i<clampedSimulationSteps;i++)
 		{
-
 			mScene->fetchResults(true);
-			mScene->simulate(PhysicsMaxTimeStep);
+			mScene->simulate(smPhysicsStepTime);
 		}
 	}
 	
@@ -592,6 +613,8 @@ void Px3World::onDebugDraw( const SceneRenderState *state )
    }
 
 }
-
-
-
+//set simulation timing via script
+DefineEngineFunction( physx3SetSimulationTiming, void, ( F32 stepTime, U32 maxSteps ),, "Set simulation timing of the PhysX 3 plugin" )
+{
+   Px3World::setTiming(stepTime,maxSteps);
+}

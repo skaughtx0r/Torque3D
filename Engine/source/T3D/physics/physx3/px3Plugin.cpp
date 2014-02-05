@@ -32,6 +32,7 @@
 #include "T3D/gameBase/gameProcess.h"
 #include "core/util/tNamedFactory.h"
 
+
 AFTER_MODULE_INIT( Sim )
 {
    NamedFactory<PhysicsPlugin>::add( "PhysX3", &Px3Plugin::create );
@@ -48,7 +49,7 @@ PhysicsPlugin* Px3Plugin::create()
    bool success = Px3World::restartSDK( false );
    if ( success )
       return new Px3Plugin();
-
+   
    return NULL;
 }
 
@@ -230,68 +231,4 @@ PhysicsCloth* Px3Plugin::createCloth(TSShapeInstance* shapeInst, const MatrixF &
     Px3ClothShape* cloth = new Px3ClothShape();
     cloth->create(shapeInst, transform);
     return cloth;
-}
-
-void Px3Plugin::_onDebugDrawEnabled( bool enabled )
-{   
-  // if ( !enabled )
-  //    gPhysics3SDK->setParameter( NX_VISUALIZATION_SCALE, 0.0f );
-}
-
-ConsoleFunction( physXRemoteDebuggerConnect, bool, 1, 3, "" )
-{
-   if ( !gPhysics3SDK )  
-   {
-      Con::errorf( "PhysX3 SDK not initialized!" );
-      return false;
-   }
-
-   /*NxRemoteDebugger *debugger = gPhysicsSDK->getFoundationSDK().getRemoteDebugger();
-
-   if ( debugger->isConnected() )
-   {
-      Con::errorf( "RemoteDebugger already connected... call disconnect first!" );
-      return false;
-   }
-
-   const UTF8 *host = "localhost";
-   U32 port = 5425;
-
-   if ( argc >= 2 )
-      host = argv[1];
-   if ( argc >= 3 )
-      port = dAtoi( argv[2] );
-
-   // Before we connect we need to have write access
-   // to both the client and server worlds.
-   PxWorld::releaseWriteLocks();
-
-   // Connect!
-   debugger->connect( host, port );
-   if ( !debugger->isConnected() )
-   {
-      Con::errorf( "RemoteDebugger failed to connect!" );
-      return false;
-   }
-
-   Con::printf( "RemoteDebugger connected to %s at port %u!", host, port );*/
-   return true;
-}
-
-ConsoleFunction( physXRemoteDebuggerDisconnect, void, 1, 1, "" )
-{
-   if ( !gPhysics3SDK )  
-   {
-      Con::errorf( "PhysX3 SDK not initialized!" );
-      return;
-   }
-
-  /* NxRemoteDebugger *debugger = gPhysicsSDK->getFoundationSDK().getRemoteDebugger();
-
-   if ( debugger->isConnected() )
-   {
-      debugger->flush();
-      debugger->disconnect();
-      Con::printf( "RemoteDebugger disconnected!" );
-   }*/
 }

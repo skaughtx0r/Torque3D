@@ -55,7 +55,7 @@ public:
    virtual PhysicsWorld* getWorld( const String &worldName ) const;
    virtual PhysicsWorld* getWorld() const;
    virtual U32 getWorldCount() const;
-   virtual void _onDebugDrawEnabled( bool enabled );
+
 
    // andrewmac: Cloth		
    PhysicsCloth* createCloth(TSShapeInstance* shapeInst, const MatrixF &transform);
