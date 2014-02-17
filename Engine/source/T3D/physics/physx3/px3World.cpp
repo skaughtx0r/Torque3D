@@ -54,7 +54,7 @@ Px3ConsoleStream* Px3World::smErrorCallback = NULL;
 physx::PxVisualDebuggerConnection* Px3World::smPvdConnection=NULL;
 physx::PxDefaultAllocator Px3World::smMemoryAlloc;
 //Physics timing
-F32 Px3World::smPhysicsStepTime = 1.0f/30.0f;
+F32 Px3World::smPhysicsStepTime = 1.0f/(F32)TickMs;
 U32 Px3World::smPhysicsMaxIterations = 4;
 
 //filter shader with support for CCD pairs
