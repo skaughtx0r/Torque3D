@@ -342,6 +342,7 @@ void Px3ParticleEmitter::addParticle(const Point3F &pos, const Point3F &axis, co
    updateKeyData(pNew);
    if (index <= 0)
       return;
+
    mParticleIndexTable.insertUnique(pNew, index);
 }
 
@@ -353,98 +354,60 @@ void Px3ParticleEmitter::processTick( const Move *move )
 
 	// These are temp arbitrary values.
 	mObjBox.set( 0, 5, 0, 5, 5, 5 );
-   resetWorldBox();
-   // Read back the data from the particles.
-   if (mParticleSystem->lock())
-   {
-      Vector<Point3F> positions = mParticleSystem->readParticles();
-      if (positions.size() > 0)
-      {
-         for (Particle* pp = part_list_head.next; pp != NULL; pp = pp->next)
-         {
-            int index;
-            if (mParticleIndexTable.find(pp, index))
-            {
-				   U32 systemIndex = mParticleSystem->getIndexFromUniqueIndex(index);
-				   if (systemIndex < positions.size())
-					   pp->pos = positions[systemIndex];
-            }
-         }
-      }
-      mParticleSystem->unlock();
-   }
+    resetWorldBox();
 
-   // remove dead particles
-   Particle* last_part = &part_list_head;
-   for (Particle* part = part_list_head.next; part != NULL; part = part->next)
-   {
-      if (mParticleSystem->getParticleCount() <= 0)
-         break;
-      part->currentAge += timeSinceTick;
-      if (part->currentAge > part->totalLifetime)
-      {
-         int index;
-         mParticleIndexTable.find(part, index);
-		   U32 systemIndex = mParticleSystem->getIndexFromUniqueIndex(index);
-		   mParticleSystem->removeParticle(systemIndex);
-         mParticleIndexTable.erase(part);
-         n_parts--;
-         last_part->next = part->next;
-         part->next = part_freelist;
-         part_freelist = part;
-         part = last_part;
-      }
-      else
-      {
-         last_part = part;
-      }
-   }
+    S32 particleCount = mParticleSystem->getParticleCount();
+
+    // Read back the data from the particles.
+    if (mParticleSystem->lock())
+    {
+        Vector<Point3F> positions = mParticleSystem->readParticles();
+        if (positions.size() > 0)
+        {
+            int index = particleCount - 1;
+            for (Particle* part = part_list_head.next; part != NULL; part = part->next)
+            {
+                // Update particle position if we're still here.
+                if ( index < positions.size() && index >= 0 )
+				    part->pos = positions[index];
+
+                index--;
+            }
+        }
+        mParticleSystem->unlock();
+    }
+
+    int index = particleCount - 1;
+    Particle* last_part = &part_list_head;
+    for (Particle* part = part_list_head.next; part != NULL; part = part->next)
+    {
+        if ( index < 0 ) break;
+
+        // Check for expiry.
+        part->currentAge += timeSinceTick;
+        if (part->currentAge > part->totalLifetime)
+        {
+            mParticleSystem->removeParticle(index);
+
+            n_parts--;
+            last_part->next = part->next;
+            part->next = part_freelist;
+            part_freelist = part;
+            part = last_part;
+        } else {
+            last_part = part;
+            index--;
+        }
+        // Specifically don't increase index because if we delete a particle at index 0
+        // then the next particle is at index 0.
+        // index++;
+    }
 
    if (timeSinceTick != 0 && n_parts > 0)
    {
       update(timeSinceTick);
    }
    timeSinceTick = 0;
-   //addParticle(Point3F(0), Point3F(0, 0, 1), Point3F(1, 1, 1), Point3F(1, 0, 0));
-    /*
-	emitterTick++;
-	emitterRemoveTick++;
-	if ( emitterTick > 32 )
-	{
-		// Add a new particle every second.
-		// mParticleSystem->addParticle(PxVec3(0, 0, 5), PxVec3(0, 1, 5));
-
-		// Add 3 new particles every second.
-		Vector<Point3F> newPos;
-		Vector<Point3F> newVel;
-		newPos.push_back(Point3F(1, 3, 5));
-		newPos.push_back(Point3F(2, 2, 5));
-		newPos.push_back(Point3F(3, 1, 5));
-		newVel.push_back(Point3F(1, 3, 5));
-		newVel.push_back(Point3F(2, 2, 5));
-		newVel.push_back(Point3F(3, 1, 5));
-		U32 count = mParticleSystem->addParticles(newPos, newVel);
-
-		// Read back the data from the particles.
-		if ( mParticleSystem->lock() )
-		{
-			Vector<Point3F> positions = mParticleSystem->readParticles();
-			for(int i = 0; i < positions.size(); i++)
-				Con::printf("Particle %d (%f, %f, %f)", i, positions[i].x, positions[i].y, positions[i].z);
-		}
-
-		// After ~9 seconds start removing the oldest particle every second. 
-		//if ( emitterRemoveTick > 300 )
-		//	mParticleSystem->removeParticle(0);
-
-		// After ~9 seconds start removing the oldest 3 particles every second.
-		if ( emitterRemoveTick > 300 )
-			mParticleSystem->removeParticles(0, 3);
-
-		// Apply a force to the particle system.
-		mParticleSystem->applyForce(ParticleEmitter::mWindVelocity);
-		emitterTick = 0;
-	}*/
 }
 
 void Px3ParticleEmitter::interpolateTick( F32 delta )
@@ -466,7 +429,7 @@ bool Px3ParticleEmitter::onNewDataBlock( GameBaseData *dptr, bool reload )
 	  mParticleSystem = new Px3ParticleSystem();
      U32 ParticlesPerSecond = 1000 / (mDataBlock->ejectionPeriodMS - mDataBlock->periodVarianceMS);
      F32 MaxParticleLifetimeInSeconds = (mDataBlock->particleDataBlocks[0]->lifetimeMS + mDataBlock->particleDataBlocks[0]->lifetimeVarianceMS) / 1000;
-     mParticleSystem->create(100);
+     mParticleSystem->create(250);
    }
    return true;
 }
@@ -534,5 +497,5 @@ void Px3ParticleEmitter::update(U32 ms)
       updateKeyData(part);
    }
    averageForce /= n_parts;
-   mParticleSystem->applyForce(averageForce);
+   //mParticleSystem->applyForce(averageForce);
 }

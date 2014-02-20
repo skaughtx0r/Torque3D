@@ -114,12 +114,12 @@ void Px3ParticleSystem::_updateProperties()
 	// These are just temporary values,
 	// will expose later.
 	mParticleSystem->setGridSize(3.0f);
-	mParticleSystem->setMaxMotionDistance(0.43f);
+	mParticleSystem->setMaxMotionDistance(0.8f);
 	mParticleSystem->setRestOffset(0.0143f);
 	mParticleSystem->setContactOffset(0.0143f * 2);
 	mParticleSystem->setDamping(0.0f);
 	mParticleSystem->setRestitution(0.2f);
-	mParticleSystem->setDynamicFriction(0.05f);
+	mParticleSystem->setDynamicFriction(0.01f);
 }
 
 // Public Functions
@@ -236,6 +236,7 @@ U32 Px3ParticleSystem::getIndexFromUniqueIndex(U32 index)
 
 bool Px3ParticleSystem::removeParticle(U32 index)
 {
+
 	return (removeParticles(index, 1) > 0);
 }
 
@@ -245,8 +246,10 @@ U32 Px3ParticleSystem::removeParticles(U32 index, U32 count)
 		return 0;
 
 	// Ensure we aren't removing past what we have.
-	if ( (index + count) >= mNumParticles )
+	if ( (index + count) > mNumParticles )
 		count = mNumParticles - index;
+
+    if ( count < 1 ) return 0;
 
 	// Free their indicies.
 	mIndexPool->freeIndices(count, PxStrideIterator<const physx::PxU32>(&mIndex[index]));
