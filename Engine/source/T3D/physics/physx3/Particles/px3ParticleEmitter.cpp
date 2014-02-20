@@ -1,6 +1,7 @@
 //-----------------------------------------------------------------------------
 // Authors: 
-//		Andrew MacIntyre - Aldyre Studios - aldyre.com
+//      Andrew MacIntyre - Aldyre Studios - aldyre.com
+//      Lukas Joergensen - WinterLeaf Entertainment - winterleafentertainment.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
@@ -46,8 +47,8 @@ IMPLEMENT_CONOBJECT( Px3ParticleEmitter );
 
 ConsoleDocClass( Px3ParticleEmitter,
    
-   "@brief Emitter for PhysX Particles\n\n"   
-   "@ingroup Physics"
+    "@brief Emitter for PhysX Particles\n\n"   
+    "@ingroup Physics"
 );
 
 Px3ParticleEmitter::Px3ParticleEmitter()
@@ -58,9 +59,9 @@ Px3ParticleEmitter::Px3ParticleEmitter()
     //mNetFlags.set( Ghostable | ScopeAlways );
     //mTypeMask |= StaticObjectType | StaticShapeObjectType;
 
-	emitterTick = 0;
-	emitterRemoveTick = 0;
-   timeSinceTick = 0;
+    emitterTick = 0;
+    emitterRemoveTick = 0;
+    timeSinceTick = 0;
 }
 
 Px3ParticleEmitter::~Px3ParticleEmitter()
@@ -69,21 +70,21 @@ Px3ParticleEmitter::~Px3ParticleEmitter()
 
 bool Px3ParticleEmitter::onAdd()
 {
-   if ( !GameBase::onAdd() )
-      return false;
+    if ( !GameBase::onAdd() )
+        return false;
 
-   // On the server we use the static update
-   // to setup the bounds of the cloth.
-   if ( isServerObject() )
-      _updateStaticSystem();
+    // On the server we use the static update
+    // to setup the bounds of the cloth.
+    if ( isServerObject() )
+        _updateStaticSystem();
 
-   addToScene();
+    addToScene();
    
-   // Also the server object never ticks.
-   if ( isServerObject() )
-      setProcessTick( false );
+    // Also the server object never ticks.
+    if ( isServerObject() )
+        setProcessTick( false );
 
-   return true;
+    return true;
 }
 
 void Px3ParticleEmitter::onRemove()
@@ -92,7 +93,7 @@ void Px3ParticleEmitter::onRemove()
     if ( isClientObject() )
     {
         if ( mParticleSystem != NULL )
-			mParticleSystem->release();
+		    mParticleSystem->release();
 
         PhysicsPlugin::getPhysicsResetSignal().remove( this, &Px3ParticleEmitter::onPhysicsReset );
     }
@@ -103,12 +104,12 @@ void Px3ParticleEmitter::onRemove()
 
 void Px3ParticleEmitter::onPhysicsReset( PhysicsResetEvent reset )
 {
-   // Store the reset transform for later use.
-   if ( reset == PhysicsResetEvent_Store )
-      mResetXfm = getTransform();
+    // Store the reset transform for later use.
+    if ( reset == PhysicsResetEvent_Store )
+        mResetXfm = getTransform();
 
-   // Recreate the cloth at the last reset position.
-   _recreateSystem( mResetXfm );
+    // Recreate the cloth at the last reset position.
+    _recreateSystem( mResetXfm );
 }
 
 void Px3ParticleEmitter::initPersistFields()
@@ -173,11 +174,10 @@ void Px3ParticleEmitter::unpackUpdate( NetConnection *conn, BitStream *stream )
     // ParticleMask
     if ( stream->readFlag() )
     {
-        //mCollisionEnabled = stream->readFlag();
-       // mWindEnabled = stream->readFlag();
+        // mCollisionEnabled = stream->readFlag();
+        // mWindEnabled = stream->readFlag();
 
-        if (  isClientObject() && isProperlyAdded() &&
-            !mParticleSystem )
+        if (  isClientObject() && isProperlyAdded() && !mParticleSystem )
         {
             //_createSystem();
         }
@@ -199,26 +199,26 @@ void Px3ParticleEmitter::_recreateSystem( const MatrixF &transform )
 
 void Px3ParticleEmitter::setTransform( const MatrixF &mat )
 {
-   Parent::setTransform( mat );
-   setMaskBits( TransformMask );
+    Parent::setTransform( mat );
+    setMaskBits( TransformMask );
 
-   // Only need to do this if we're on the server
-   // or if we're not currently ticking physics.
-   if ( !mParticleSystem )
-      _updateStaticSystem();
+    // Only need to do this if we're on the server
+    // or if we're not currently ticking physics.
+    if ( !mParticleSystem )
+        _updateStaticSystem();
 }
 
 void Px3ParticleEmitter::setScale( const VectorF &scale )
 {
-   // Cloth doesn't support scale as it has plenty
-   // of complications... sharing meshes, thickness,
-   // transform origin, etc.
-   return;
+    // Cloth doesn't support scale as it has plenty
+    // of complications... sharing meshes, thickness,
+    // transform origin, etc.
+    return;
 }
 
 void Px3ParticleEmitter::prepRenderImage( SceneRenderState *state )
 {  
-   Parent::prepRenderImage(state);
+    Parent::prepRenderImage(state);
 }
 
 void Px3ParticleEmitter::_updateProperties()
@@ -252,26 +252,7 @@ void Px3ParticleEmitter::_updateVBIB()
     if ( !mParticleSystem )
         return;
 
-    /*PROFILE_SCOPE( Px3ParticleEmitter_UpdateVBIB );
-
-    mIsVBDirty = false;
-
-    // Don't set the VB if the vertex count is the same!
-    if ( mVB.isNull() || mVB->mNumVerts < mNumVertices )
-        mVB.set( GFX, mNumVertices, GFXBufferTypeDynamic );
-
-    GFXVertexPNTT *vpPtr = mVB.lock();
-    dMemcpy( vpPtr, mVertexRenderBuffer, sizeof( GFXVertexPNTT ) * mNumVertices );
-    mVB.unlock();
-
-    if ( mPrimBuffer.isNull() || mPrimBuffer->mIndexCount < mNumIndices )
-        mPrimBuffer.set( GFX, mNumIndices, 0, GFXBufferTypeDynamic );
-
-    U16 *pbPtr;
-    mPrimBuffer.lock( &pbPtr );
-    dMemcpy( pbPtr, mIndexRenderBuffer, sizeof( U16 ) * mNumIndices );
-    mPrimBuffer.unlock();
-	*/
+    // Not used at the moment.
 }
 
 void Px3ParticleEmitter::_updateStaticSystem()
@@ -282,68 +263,74 @@ void Px3ParticleEmitter::_updateStaticSystem()
 
 void Px3ParticleEmitter::addParticle(const Point3F &pos, const Point3F &axis, const Point3F &vel, const Point3F &axisx)
 {
-   Point3F ejectionAxis = axis;
-   F32 theta = (mDataBlock->thetaMax - mDataBlock->thetaMin) * gRandGen.randF() +
-      mDataBlock->thetaMin;
+    Point3F ejectionAxis = axis;
+    F32 theta = (mDataBlock->thetaMax - mDataBlock->thetaMin) * gRandGen.randF() +
+        mDataBlock->thetaMin;
 
-   F32 ref = (F32(mInternalClock) / 1000.0) * mDataBlock->phiReferenceVel;
-   F32 phi = ref + gRandGen.randF() * mDataBlock->phiVariance;
+    F32 ref = (F32(mInternalClock) / 1000.0) * mDataBlock->phiReferenceVel;
+    F32 phi = ref + gRandGen.randF() * mDataBlock->phiVariance;
 
-   // Both phi and theta are in degs.  Create axis angles out of them, and create the
-   //  appropriate rotation matrix...
-   AngAxisF thetaRot(axisx, theta * (M_PI / 180.0));
-   AngAxisF phiRot(axis, phi   * (M_PI / 180.0));
+    // Both phi and theta are in degs.  Create axis angles out of them, and create the
+    //  appropriate rotation matrix...
+    AngAxisF thetaRot(axisx, theta * (M_PI / 180.0));
+    AngAxisF phiRot(axis, phi   * (M_PI / 180.0));
 
-   MatrixF temp(true);
-   thetaRot.setMatrix(&temp);
-   temp.mulP(ejectionAxis);
-   phiRot.setMatrix(&temp);
-   temp.mulP(ejectionAxis);
+    MatrixF temp(true);
+    thetaRot.setMatrix(&temp);
+    temp.mulP(ejectionAxis);
+    phiRot.setMatrix(&temp);
+    temp.mulP(ejectionAxis);
 
-   F32 initialVel = mDataBlock->ejectionVelocity;
-   initialVel += (mDataBlock->velocityVariance * 2.0f * gRandGen.randF()) - mDataBlock->velocityVariance;
+    F32 initialVel = mDataBlock->ejectionVelocity;
+    initialVel += (mDataBlock->velocityVariance * 2.0f * gRandGen.randF()) - mDataBlock->velocityVariance;
 
-   Point3F newPos = pos + (ejectionAxis * (mDataBlock->ejectionOffset + mDataBlock->ejectionOffsetVariance* gRandGen.randF()));
-   Point3F newVel = ejectionAxis * initialVel;
-   U32 index;
-   bool particleWereAdded = mParticleSystem->addParticle(newPos, newVel, index);
-   if (!particleWereAdded)
-      return;
+    Point3F newPos = pos + (ejectionAxis * (mDataBlock->ejectionOffset + mDataBlock->ejectionOffsetVariance* gRandGen.randF()));
+    Point3F newVel = ejectionAxis * initialVel;
+    U32 index;
 
-   n_parts++;
-   if (n_parts > n_part_capacity || n_parts > mDataBlock->partListInitSize)
-   {
-      // In an emergency we allocate additional particles in blocks of 16.
-      // This should happen rarely.
-      Particle* store_block = new Particle[16];
-      part_store.push_back(store_block);
-      n_part_capacity += 16;
-      for (S32 i = 0; i < 16; i++)
-      {
-         store_block[i].next = part_freelist;
-         part_freelist = &store_block[i];
-      }
-      mDataBlock->allocPrimBuffer(n_part_capacity); // allocate larger primitive buffer or will crash 
-   }
-   Particle* pNew = part_freelist;
-   part_freelist = pNew->next;
-   pNew->next = part_list_head.next;
-   part_list_head.next = pNew;
+    // Attempt to create particle. If this fuction returns false there isn't
+    // enough room for another particle. Exit.
+    bool particleWereAdded = mParticleSystem->addParticle(newPos, newVel, index);
+    if (!particleWereAdded)
+        return;
 
-   pNew->pos = newPos;
-   pNew->vel = newVel;
-   pNew->orientDir = ejectionAxis;
-   pNew->acc.set(0, 0, 0);
-   pNew->currentAge = 0;
+    n_parts++;
+    if (n_parts > n_part_capacity || n_parts > mDataBlock->partListInitSize)
+    {
+        // In an emergency we allocate additional particles in blocks of 16.
+        // This should happen rarely.
+        Particle* store_block = new Particle[16];
+        part_store.push_back(store_block);
+        n_part_capacity += 16;
+        for (S32 i = 0; i < 16; i++)
+        {
+            store_block[i].next = part_freelist;
+            part_freelist = &store_block[i];
+        }
+        mDataBlock->allocPrimBuffer(n_part_capacity); // allocate larger primitive buffer or will crash 
+    }
 
-   // Choose a new particle datablack randomly from the list
-   U32 dBlockIndex = gRandGen.randI() % mDataBlock->particleDataBlocks.size();
-   mDataBlock->particleDataBlocks[dBlockIndex]->initializeParticle(pNew, vel);
-   updateKeyData(pNew);
-   if (index <= 0)
-      return;
+    // Add to particle linked list.
+    Particle* pNew = part_freelist;
+    part_freelist = pNew->next;
+    pNew->next = part_list_head.next;
+    part_list_head.next = pNew;
 
-   mParticleIndexTable.insertUnique(pNew, index);
+    // 
+    pNew->pos = newPos;
+    pNew->vel = newVel;
+    pNew->orientDir = ejectionAxis;
+    pNew->acc.set(0, 0, 0);
+    pNew->currentAge = 0;
+
+    // Choose a new particle datablack randomly from the list
+    U32 dBlockIndex = gRandGen.randI() % mDataBlock->particleDataBlocks.size();
+    mDataBlock->particleDataBlocks[dBlockIndex]->initializeParticle(pNew, vel);
+    updateKeyData(pNew);
+    if (index <= 0)
+        return;
+
+    mParticleIndexTable.insertUnique(pNew, index);
 }
 
 void Px3ParticleEmitter::processTick( const Move *move )
@@ -356,9 +343,8 @@ void Px3ParticleEmitter::processTick( const Move *move )
 	mObjBox.set( 0, 5, 0, 5, 5, 5 );
     resetWorldBox();
 
-    S32 particleCount = mParticleSystem->getParticleCount();
-
     // Read back the data from the particles.
+    S32 particleCount = mParticleSystem->getParticleCount();
     if (mParticleSystem->lock())
     {
         Vector<Point3F> positions = mParticleSystem->readParticles();
@@ -377,30 +363,30 @@ void Px3ParticleEmitter::processTick( const Move *move )
         mParticleSystem->unlock();
     }
 
+    // Remove expired particles.
     int index = particleCount - 1;
     Particle* last_part = &part_list_head;
     for (Particle* part = part_list_head.next; part != NULL; part = part->next)
     {
         if ( index < 0 ) break;
 
-        // Check for expiry.
         part->currentAge += timeSinceTick;
         if (part->currentAge > part->totalLifetime)
         {
+            // Delete particle from PhysX.
             mParticleSystem->removeParticle(index);
 
+            // Delete particle from Torque.
             n_parts--;
             last_part->next = part->next;
             part->next = part_freelist;
             part_freelist = part;
             part = last_part;
         } else {
+            // only decrease index if we didn't delete a particle.
             last_part = part;
             index--;
         }
-        // Specifically don't increase index because if we delete a particle at index 0
-        // then the next particle is at index 0.
-        // index++;
     }
 
    if (timeSinceTick != 0 && n_parts > 0)
@@ -463,8 +449,6 @@ void Px3ParticleEmitter::advanceTime(F32 dt)
    timeSinceTick += numMSToUpdate;
 
    // TODO: Prefetch
-
-
    AssertFatal(n_parts >= 0, "ParticleEmitter: negative part count!");
 
    if (n_parts < 1 && mDeleteWhenEmpty)
@@ -479,23 +463,6 @@ void Px3ParticleEmitter::advanceTime(F32 dt)
 //-----------------------------------------------------------------------------
 void Px3ParticleEmitter::update(U32 ms)
 {
-   // TODO: Prefetch
-   Point3F averageForce = Point3F(0);
    for (Particle* part = part_list_head.next; part != NULL; part = part->next)
-   {
-      F32 t = F32(ms) / 1000.0;
-
-      Point3F a = part->acc;
-      a -= part->vel        * part->dataBlock->dragCoefficient;
-      a -= mWindVelocity * part->dataBlock->windCoefficient;
-      a += Point3F(0.0f, 0.0f, -9.81f) * part->dataBlock->gravityCoefficient;
-
-      part->vel += a * t;
-
-      averageForce += part->vel;
-
       updateKeyData(part);
-   }
-   averageForce /= n_parts;
-   //mParticleSystem->applyForce(averageForce);
 }

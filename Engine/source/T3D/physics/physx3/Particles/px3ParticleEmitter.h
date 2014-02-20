@@ -1,6 +1,7 @@
 //-----------------------------------------------------------------------------
 // Authors: 
-//		Andrew MacIntyre - Aldyre Studios - aldyre.com
+//      Andrew MacIntyre - Aldyre Studios - aldyre.com
+//      Lukas Joergensen - WinterLeaf Entertainment - winterleafentertainment.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
