@@ -128,7 +128,11 @@ bool Px3Body::init(   PhysicsCollision *shape,
 	   if(isDebris)
 			colData.word0 = PX3_DEBRIS;
 	   else if(isTrigger)
+      {
+         //We don't want trigger shapes taking part in shape pair intersection tests
+         pShape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, false);
 		   colData.word0 = PX3_TRIGGER;
+      }
 	   else
 		   colData.word0 = PX3_DEFAULT;
 
@@ -346,12 +350,15 @@ void Px3Body::setSimulationEnabled( bool enabled )
 {
    if ( mIsEnabled == enabled )
       return;
+
+   //Don't need to enable/disable eSIMULATION_SHAPE for trigger,it's disabled permanently
+   if(mBodyFlags & BF_TRIGGER)
+      return;
   
    // This sucks, but it has to happen if we want
    // to avoid write lock errors from PhysX right now.
    mWorld->releaseWriteLock();
 
- 
    U32 shapeCount = mActor->getNbShapes();
 	physx::PxShape **shapes = new physx::PxShape*[shapeCount];
 	mActor->getShapes(shapes, shapeCount);
