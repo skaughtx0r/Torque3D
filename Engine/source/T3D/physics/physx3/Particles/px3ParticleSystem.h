@@ -45,14 +45,12 @@ class Material;
 class BaseMatInstance;
 class Px3World;
 
-using namespace physx;
-
 class Px3ParticleSystem
 {
 
 public:
-    Px3ParticleSystem();
-    virtual ~Px3ParticleSystem(); 
+   Px3ParticleSystem();
+   virtual ~Px3ParticleSystem(); 
 
 	bool create(U32 maxParticles);
 	void release();
@@ -73,23 +71,23 @@ public:
 	U32 getIndexFromUniqueIndex(U32 index);
 
 protected:
-    Px3World *mWorld;
-    PxScene *mScene;
+   Px3World *mWorld;
+   physx::PxScene *mScene;
 
-	PxParticleExt::IndexPool* mIndexPool;
-    PxParticleSystem* mParticleSystem;
-	PxParticleReadData* mParticleReadData;
+	physx::PxParticleExt::IndexPool* mIndexPool;
+   physx::PxParticleSystem* mParticleSystem;
+	physx::PxParticleReadData* mParticleReadData;
 
 	U32 mNumParticles;
 	U32 mMaxParticles;
 
-	Vector<PxVec3> mPosition;
-	Vector<PxVec3> mVelocity;
-	Vector<PxU32> mIndex;
+	Vector<physx::PxVec3> mPosition;
+	Vector<physx::PxVec3> mVelocity;
+	Vector<physx::PxU32> mIndex;
 	Vector<U32> mUniqueIndex;
 
-    MatrixF mResetXfm;
-    void _releaseSystem();
+   MatrixF mResetXfm;
+   void _releaseSystem();
 	bool _createSystem();
 	bool _createParticles();
 	void _updateProperties();

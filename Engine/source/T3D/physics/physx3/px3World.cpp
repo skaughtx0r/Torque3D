@@ -36,7 +36,7 @@
 #include "console/console.h"
 #include "console/consoleTypes.h"
 #include "core/util/safeDelete.h"
-#include "T3D/tsstatic.h"
+#include "collision/collision.h"
 #include "T3D/gameBase/gameProcess.h"
 #include "gfx/sim/debugDraw.h"
 #include "gfx/primBuilder.h"

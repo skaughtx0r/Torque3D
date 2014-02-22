@@ -133,7 +133,7 @@ bool Px3ParticleSystem::create(U32 maxParticles)
       return false;
    }
    mScene = mWorld->getScene();
-	mIndexPool = PxParticleExt::createIndexPool(maxParticles);
+	mIndexPool = physx::PxParticleExt::createIndexPool(maxParticles);
 
 	_releaseSystem();
 	mMaxParticles = maxParticles;
@@ -175,32 +175,32 @@ Vector<U32> Px3ParticleSystem::addParticles(Vector<Point3F> position, Vector<Poi
 		return 0;
 	}
 
-	Vector<PxU32> indexList;
+	Vector<physx::PxU32> indexList;
 	Vector<U32> uniqueIndexList;
-	Vector<PxVec3> posList;
-	Vector<PxVec3> velList;
+	Vector<physx::PxVec3> posList;
+	Vector<physx::PxVec3> velList;
 
 	// See how many particles we can create.
 	U32 count = position.size();
 	indexList.setSize(count);
-	count = mIndexPool->allocateIndices(count, PxStrideIterator<PxU32>(&indexList[0]));
+	count = mIndexPool->allocateIndices(count, physx::PxStrideIterator<physx::PxU32>(&indexList[0]));
 	indexList.setSize(count);
    if (count < 1)
       return 0;
 	// Add as many as we can to the list. Hopefully all of them.
 	for(int a = 0; a < count; a++)
 	{
-		posList.push_back(PxVec3(position[a].x, position[a].y, position[a].z));
-		velList.push_back(PxVec3(velocity[a].x, velocity[a].y, velocity[a].z));
+		posList.push_back(physx::PxVec3(position[a].x, position[a].y, position[a].z));
+		velList.push_back(physx::PxVec3(velocity[a].x, velocity[a].y, velocity[a].z));
 		uniqueIndexList.push_back(mCurrentIndex++);
 	}
 
 	// Setup creation data.
-	PxParticleCreationData particleCreationData;
+	physx::PxParticleCreationData particleCreationData;
 	particleCreationData.numParticles = count;
-	particleCreationData.positionBuffer = PxStrideIterator<const physx::PxVec3>(&posList[0]);
-	particleCreationData.velocityBuffer = PxStrideIterator<const physx::PxVec3>(&velList[0]);
-	particleCreationData.indexBuffer = PxStrideIterator<const physx::PxU32>(&indexList[0]);
+	particleCreationData.positionBuffer = physx::PxStrideIterator<const physx::PxVec3>(&posList[0]);
+	particleCreationData.velocityBuffer = physx::PxStrideIterator<const physx::PxVec3>(&velList[0]);
+	particleCreationData.indexBuffer = physx::PxStrideIterator<const physx::PxU32>(&indexList[0]);
 
 	// Attempt to create them all.
 	if ( mParticleSystem->createParticles(particleCreationData) )
@@ -253,8 +253,8 @@ U32 Px3ParticleSystem::removeParticles(U32 index, U32 count)
    if ( count < 1 ) return 0;
 
 	// Free their indicies.
-	mIndexPool->freeIndices(count, PxStrideIterator<const physx::PxU32>(&mIndex[index]));
-	mParticleSystem->releaseParticles(count, PxStrideIterator<const PxU32>(&mIndex[index]));
+	mIndexPool->freeIndices(count, physx::PxStrideIterator<const physx::PxU32>(&mIndex[index]));
+	mParticleSystem->releaseParticles(count, physx::PxStrideIterator<const physx::PxU32>(&mIndex[index]));
 
 	for ( U32 i = 0; i < count; i++ )
 	{
@@ -272,15 +272,15 @@ void Px3ParticleSystem::applyForce(Point3F force)
 	if ( mNumParticles < 1 )
 		return;
 
-	Vector<PxVec3> forces;
+	Vector<physx::PxVec3> forces;
 	for(U32 i = 0; i < mNumParticles; i++)
-		forces.push_back(PxVec3(force.x, force.y, force.z));
+		forces.push_back(physx::PxVec3(force.x, force.y, force.z));
 
 	// Apply force to all particles in the system.
 	mParticleSystem->addForces(mNumParticles, 
-		PxStrideIterator<const PxU32>(&mIndex[0]), 
-		PxStrideIterator<const PxVec3>(&forces[0]), 
-		PxForceMode::eFORCE);
+		physx::PxStrideIterator<const physx::PxU32>(&mIndex[0]), 
+		physx::PxStrideIterator<const physx::PxVec3>(&forces[0]), 
+		physx::PxForceMode::eFORCE);
 }
 
 bool Px3ParticleSystem::lock()
@@ -314,15 +314,15 @@ Vector<Point3F> Px3ParticleSystem::readParticles()
 		return results;
 
 	// Read Flags + Positions from PhysX
-	PxStrideIterator<const PxParticleFlags> flagsIt(mParticleReadData->flagsBuffer);
-	PxStrideIterator<const PxVec3> positionIt(mParticleReadData->positionBuffer);
+	physx::PxStrideIterator<const physx::PxParticleFlags> flagsIt(mParticleReadData->flagsBuffer);
+	physx::PxStrideIterator<const physx::PxVec3> positionIt(mParticleReadData->positionBuffer);
 
 	for (unsigned i = 0; i < mParticleReadData->validParticleRange; ++i, ++flagsIt, ++positionIt)
 	{
 		// Checks to make sure the particle is valid.
-		if (*flagsIt & PxParticleFlag::eVALID)
+		if (*flagsIt & physx::PxParticleFlag::eVALID)
 		{
-			const PxVec3& position = *positionIt;
+			const physx::PxVec3& position = *positionIt;
 			results.push_back(Point3F(position.x, position.y, position.z));
 		}
 

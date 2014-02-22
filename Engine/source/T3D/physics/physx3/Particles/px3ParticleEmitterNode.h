@@ -28,9 +28,12 @@
 #ifndef _GAMEBASE_H_
 #include "T3D/gameBase/gameBase.h"
 #endif
-
-#include "px3ParticleEmitter.h"
+#ifndef _PARTICLEEMITTERDUMMY_H_
 #include "T3D/fx/particleEmitterNode.h"
+#endif
+#ifndef _Px3ParticleEmitter_H
+#include "T3D/physics/physx3/Particles/px3ParticleEmitter.h"
+#endif
 
 //*****************************************************************************
 // ParticleEmitterNode
@@ -38,12 +41,6 @@
 class Px3ParticleEmitterNode : public ParticleEmitterNode
 {
    typedef ParticleEmitterNode Parent;
-
-private:
-
-protected:
-
-public:
 
 public:
    Px3ParticleEmitterNode();

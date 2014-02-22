@@ -27,6 +27,7 @@
 #include "T3D/physics/physx3/px3Collision.h"
 #include "T3D/physics/physx3/px3Body.h"
 #include "T3D/physics/physx3/px3Player.h"
+#include "T3D/physics/physx3/Cloth/px3ClothShape.h"
 
 #include "T3D/physics/physicsShape.h"
 #include "T3D/gameBase/gameProcess.h"

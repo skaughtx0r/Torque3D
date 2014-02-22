@@ -43,10 +43,9 @@ class TSShapeInstance;
 class TSThread;
 class TSStatic;
 class PhysicsBody;
+class PhysicsCloth;
 struct ObjectRenderInst;
 
-// andrewmac: Cloth Addon
-#include "T3D/physics/physicsCloth.h"
 
 class TSStaticPolysoupConvex : public Convex
 {

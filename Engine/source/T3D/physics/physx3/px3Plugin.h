@@ -27,7 +27,6 @@
 #include "T3D/physics/physicsPlugin.h"
 #endif
 
-#include "T3D/physics/physx3/Cloth/Px3ClothShape.h"
 class Px3ClothShape;
 
 class Px3Plugin : public PhysicsPlugin
