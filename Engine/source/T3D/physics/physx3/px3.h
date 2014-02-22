@@ -36,16 +36,16 @@
 //-------------------------------------------------------------------------
 
 #include <PxPhysicsAPI.h>
-#include <extensions\PxExtensionsAPI.h>
-#include <extensions\PxDefaultErrorCallback.h>
-#include <extensions\PxDefaultAllocator.h>
-#include <extensions\PxDefaultSimulationFilterShader.h>
-#include <extensions\PxDefaultCpuDispatcher.h>
-#include <extensions\PxShapeExt.h>
-#include <extensions\PxSimpleFactory.h>
-#include <foundation\PxFoundation.h>
-#include <characterkinematic\PxController.h>
-#include <common\PxIO.h> 
+#include <extensions/PxExtensionsAPI.h>
+#include <extensions/PxDefaultErrorCallback.h>
+#include <extensions/PxDefaultAllocator.h>
+#include <extensions/PxDefaultSimulationFilterShader.h>
+#include <extensions/PxDefaultCpuDispatcher.h>
+#include <extensions/PxShapeExt.h>
+#include <extensions/PxSimpleFactory.h>
+#include <foundation/PxFoundation.h>
+#include <characterkinematic/PxController.h>
+#include <common/PxIO.h> 
 
 
 extern physx::PxPhysics* gPhysics3SDK;

@@ -23,7 +23,7 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "T3D/physics/physx3/Particles/Px3ParticleEmitter.h"
+#include "T3D/physics/physx3/Particles/px3ParticleEmitter.h"
 #include "T3D/physics/physx3/Particles/px3ParticleSystem.h"
 #include "T3D/physics/physx3/px3.h"
 #include "T3D/physics/physx3/px3World.h"

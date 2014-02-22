@@ -23,8 +23,8 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "px3ParticleEmitter.h"
-#include "px3ParticleEmitterNode.h"
+#include "T3D/physics/physx3/Particles/px3ParticleEmitter.h"
+#include "T3D/physics/physx3/Particles/px3ParticleEmitterNode.h"
 
 IMPLEMENT_CO_NETOBJECT_V1(Px3ParticleEmitterNode);
 

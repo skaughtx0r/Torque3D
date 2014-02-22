@@ -59,7 +59,7 @@ protected:
 
    /// The unshared local material used on all the 
    /// shapes on this actor.
-  physx::PxMaterial *mMaterial;
+   physx::PxMaterial *mMaterial;
 
    /// We hold the collision reference as it contains
    /// allocated objects that we own and must free.

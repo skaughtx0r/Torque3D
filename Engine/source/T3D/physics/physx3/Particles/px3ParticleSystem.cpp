@@ -47,7 +47,7 @@ Px3ParticleSystem::Px3ParticleSystem()
   : mWorld( NULL ),
     mScene( NULL )
 {
-    mParticleSystem = NULL;
+   mParticleSystem = NULL;
 	mNumParticles = 0;
 	mMaxParticles = 0;
 	mIndexPool = NULL;
@@ -61,22 +61,22 @@ Px3ParticleSystem::~Px3ParticleSystem()
 
 bool Px3ParticleSystem::_createSystem()
 {
-    mWorld->releaseWriteLock();
+   mWorld->releaseWriteLock();
 
 	// Clear old data.
-    _releaseSystem();
+   _releaseSystem();
 
 	// Attempt to create particle system.
 	physx::PxParticleSystem* system = gPhysics3SDK->createParticleSystem(mMaxParticles);
-    if ( system )
-    {
-		// Add the system to the PhysX scene.
-        mScene->addActor(*system);
-        mParticleSystem = system;
+   if ( system )
+   {
+      // Add the system to the PhysX scene.
+      mScene->addActor(*system);
+      mParticleSystem = system;
 
 		// Set properties.
-        _updateProperties();
-		return true;
+      _updateProperties();
+      return true;
     }
     return false;
 }
@@ -109,7 +109,7 @@ void Px3ParticleSystem::_releaseSystem()
 
 void Px3ParticleSystem::_updateProperties()
 {
-    if ( !mParticleSystem )
+   if ( !mParticleSystem )
         return;
 
 	// These are just temporary values,
@@ -127,12 +127,12 @@ void Px3ParticleSystem::_updateProperties()
 bool Px3ParticleSystem::create(U32 maxParticles)
 {
 	mWorld = dynamic_cast<Px3World*>( PHYSICSMGR->getWorld( "client" ) );
-    if ( !mWorld || !mWorld->getScene() )
-    {
-        Con::errorf( "[Px3ParticleSystem] Could not start. PhysX world not initialized." );
-        return false;
-    }
-    mScene = mWorld->getScene();
+   if ( !mWorld || !mWorld->getScene() )
+   {
+      Con::errorf( "[Px3ParticleSystem] Could not start. PhysX world not initialized." );
+      return false;
+   }
+   mScene = mWorld->getScene();
 	mIndexPool = PxParticleExt::createIndexPool(maxParticles);
 
 	_releaseSystem();
@@ -142,7 +142,7 @@ bool Px3ParticleSystem::create(U32 maxParticles)
 
 void Px3ParticleSystem::release()
 {
-	_releaseSystem();
+   _releaseSystem();
 }
 
 bool Px3ParticleSystem::addParticle(Point3F position, Point3F velocity)
@@ -231,13 +231,13 @@ U32 Px3ParticleSystem::getIndexFromUniqueIndex(U32 index)
 	for (int i = 0; i < mUniqueIndex.size(); i++)
 	   if (mUniqueIndex[i] == index)
 		   return i;
+
 	AssertWarn(false, "The requested index does not exist.");
 	return 0;
 }
 
 bool Px3ParticleSystem::removeParticle(U32 index)
 {
-
 	return (removeParticles(index, 1) > 0);
 }
 
@@ -250,7 +250,7 @@ U32 Px3ParticleSystem::removeParticles(U32 index, U32 count)
 	if ( (index + count) > mNumParticles )
 		count = mNumParticles - index;
 
-    if ( count < 1 ) return 0;
+   if ( count < 1 ) return 0;
 
 	// Free their indicies.
 	mIndexPool->freeIndices(count, PxStrideIterator<const physx::PxU32>(&mIndex[index]));
@@ -305,7 +305,7 @@ void Px3ParticleSystem::unlock()
 
 Vector<Point3F> Px3ParticleSystem::readParticles()
 {
-	Vector<Point3F> results;
+   Vector<Point3F> results;
 
 	if ( !mParticleSystem )
 		return results;
