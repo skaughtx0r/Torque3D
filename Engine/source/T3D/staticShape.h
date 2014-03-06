@@ -50,6 +50,7 @@ struct StaticShapeData: public ShapeBaseData
    bool  isShielded;
    F32   energyPerDamagePoint;
    bool  enablePhysicsRep;
+   bool  kinematic;
    MeshType collisionType;
 
    //

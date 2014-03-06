@@ -370,6 +370,23 @@ void Px3Body::setSimulationEnabled( bool enabled )
    delete [] shapes;
 }
 
+void Px3Body::moveKinematicTo( const MatrixF &transform )
+{
+   AssertFatal( mActor, "Px3Body::moveTo - The actor is null!" );
+
+   const bool isKinematic = mBodyFlags & BF_KINEMATIC;
+   if (!isKinematic )
+   {
+      Con::errorf("Px3Body::moveKinematicTo is only for kinematic bodies.");
+      return;
+   }   
+
+   mWorld->releaseWriteLock();
+
+   physx::PxRigidDynamic *actor = mActor->is<physx::PxRigidDynamic>();
+   actor->setKinematicTarget(px3Cast<physx::PxTransform>(transform));
+}
+
 void Px3Body::setTransform( const MatrixF &transform )
 {
    AssertFatal( mActor, "Px3Body::setTransform - The actor is null!" );

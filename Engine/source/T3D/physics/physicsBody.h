@@ -57,6 +57,8 @@ public:
       BF_CCD = BIT( 3 )
    };
 
+   virtual void moveKinematicTo( const MatrixF &xfm ) = 0;
+
    /// Initialize the body with a collision shape 
    /// and basic physics properties.
    virtual bool init(   PhysicsCollision *shape, 

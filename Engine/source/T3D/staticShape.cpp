@@ -105,6 +105,7 @@ StaticShapeData::StaticShapeData()
    shadowEnable = true;
    noIndividualDamage = false;
    enablePhysicsRep = true;
+   kinematic = false;
    collisionType = CollisionMesh;
 }
 
@@ -121,6 +122,8 @@ void StaticShapeData::initPersistFields()
          "@brief Creates a representation of the object in the physics plugin.\n");
       addField( "collisionType", TypeSSDMeshType,  Offset( collisionType,StaticShapeData ),
          "The type of mesh data to use for collision queries." );
+      addField( "kinematic",TypeBool, Offset(kinematic,StaticShapeData),
+         "@brief Set the physics body to be a kinematic rigid body.");
    endGroup("Physics");
 
    // don't need mass on a static item
@@ -135,6 +138,7 @@ void StaticShapeData::packData(BitStream* stream)
    stream->writeFlag(noIndividualDamage);
    stream->write(dynamicTypeField);
    stream->write(enablePhysicsRep);
+   stream->write(kinematic);
    stream->write((U32)collisionType);
 }
 
@@ -144,6 +148,7 @@ void StaticShapeData::unpackData(BitStream* stream)
    noIndividualDamage = stream->readFlag();
    stream->read(&dynamicTypeField);
    stream->read(&enablePhysicsRep);
+   stream->read(&kinematic);
    U32 colType = CollisionMesh;
    stream->read(&colType);
    collisionType = (MeshType)colType;
@@ -227,6 +232,7 @@ void StaticShape::_createPhysics()
    if ( !PHYSICSMGR || colType == StaticShapeData::None )
       return;
 
+   bool kinematic = mDataBlock->kinematic;
    TSShape *shape = mShapeInstance->getShape();
    PhysicsCollision *colShape = NULL;
    if ( colType == StaticShapeData::Bounds )
@@ -237,13 +243,19 @@ void StaticShape::_createPhysics()
       colShape->addBox( getObjBox().getExtents() * 0.5f * mObjScale, offset );         
    }
    else
+   {
       colShape = shape->buildColShape( colType == StaticShapeData::VisibleMesh, getScale() );
+   }
+
+   U32 bodyFlags=0;
+   if(kinematic)
+      bodyFlags = PhysicsBody::BF_KINEMATIC;
 
    if ( colShape )
    {
       PhysicsWorld *world = PHYSICSMGR->getWorld( isServerObject() ? "server" : "client" );
       mPhysicsRep = PHYSICSMGR->createBody();
-      mPhysicsRep->init( colShape, 0, 0, this, world );
+      mPhysicsRep->init( colShape, 0, bodyFlags, this, world );
       mPhysicsRep->setTransform( getTransform() );
    }
 }
@@ -318,6 +330,13 @@ void StaticShape::setTransform(const MatrixF& mat)
 {
    Parent::setTransform(mat);
    setMaskBits(PositionMask);
+   if ( mPhysicsRep )
+   {
+      if(mDataBlock->kinematic)
+         mPhysicsRep->moveKinematicTo( mat );
+      else
+         mPhysicsRep->setTransform( mat );
+   }
 }
 
 void StaticShape::onUnmount(ShapeBase*,S32)
