@@ -413,8 +413,8 @@ bool Px3ParticleEmitter::onNewDataBlock( GameBaseData *dptr, bool reload )
       PhysicsPlugin::getPhysicsResetSignal().notify( this, &Px3ParticleEmitter::onPhysicsReset, 1053.0f );
 
 	  mParticleSystem = new Px3ParticleSystem();
-     U32 ParticlesPerSecond = 1000 / (mDataBlock->ejectionPeriodMS - mDataBlock->periodVarianceMS);
-     F32 MaxParticleLifetimeInSeconds = (mDataBlock->particleDataBlocks[0]->lifetimeMS + mDataBlock->particleDataBlocks[0]->lifetimeVarianceMS) / 1000;
+     //U32 ParticlesPerSecond = 1000 / (mDataBlock->ejectionPeriodMS - mDataBlock->periodVarianceMS);
+     //F32 MaxParticleLifetimeInSeconds = (mDataBlock->particleDataBlocks[0]->lifetimeMS + mDataBlock->particleDataBlocks[0]->lifetimeVarianceMS) / 1000;
      mParticleSystem->create(250);
    }
    return true;

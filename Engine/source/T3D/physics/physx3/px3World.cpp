@@ -80,6 +80,7 @@ Px3World::Px3World(): mScene( NULL ),
    mErrorReport( false ),
    mTickCount( 0 ),
    mIsEnabled( false ),
+   mGpuSupport( false ),
    mEditorTimeScale( 1.0f ),
    mAccumulator( 0 ),
    mControllerManager( NULL )
@@ -240,6 +241,7 @@ void Px3World::destroyWorld()
 		mScene->release();
 		mScene = NULL;
 	}
+   mGpuSupport = false;
 
 }
 
@@ -269,6 +271,7 @@ bool Px3World::initWorld( bool isServer, ProcessList *processList )
    {
       if(smCudaContextManager->contextIsValid())
       {
+         mGpuSupport = true;
          sceneDesc.gpuDispatcher = smCudaContextManager->getGpuDispatcher();
          Con::printf("PhysX3 using Gpu: %s", smCudaContextManager->getDeviceName());
       }

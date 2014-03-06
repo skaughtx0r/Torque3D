@@ -68,6 +68,8 @@ bool Px3ParticleSystem::_createSystem()
 
 	// Attempt to create particle system.
 	physx::PxParticleSystem* system = gPhysics3SDK->createParticleSystem(mMaxParticles);
+   //enable GPU acceleration if supported
+   system->setParticleBaseFlag(physx::PxParticleBaseFlag::eGPU,mWorld->isGpuSupported());
    if ( system )
    {
       // Add the system to the PhysX scene.
@@ -228,7 +230,7 @@ U32 Px3ParticleSystem::getUniqueParticleIndex(U32 index)
 
 U32 Px3ParticleSystem::getIndexFromUniqueIndex(U32 index)
 {
-	for (int i = 0; i < mUniqueIndex.size(); i++)
+	for (U32 i = 0; i < mUniqueIndex.size(); i++)
 	   if (mUniqueIndex[i] == index)
 		   return i;
 

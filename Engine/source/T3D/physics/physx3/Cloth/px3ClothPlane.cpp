@@ -580,7 +580,8 @@ void Px3ClothPlane::_updateClothProperties()
       return;
 
    mCloth->setClothFlag(PxClothFlag::eSCENE_COLLISION, mCollisionEnabled);
-   mCloth->setClothFlag(PxClothFlag::eGPU, mGpuEnabled);
+   bool gpuSupport = (mGpuEnabled && mWorld->isGpuSupported()) ? true : false;
+   mCloth->setClothFlag(PxClothFlag::eGPU, gpuSupport);
    mCloth->setSolverFrequency(mSolverFrequency);
    mCloth->setDampingCoefficient(PxVec3(mDampingCoef));
 

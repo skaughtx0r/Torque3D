@@ -61,6 +61,7 @@ protected:
 	ProcessList *mProcessList;
 	F32 mEditorTimeScale;
 	bool mErrorReport;
+   bool mGpuSupport;
 	physx::PxControllerManager* mControllerManager;
 	static Px3ConsoleStream *smErrorCallback;
 	static physx::PxDefaultAllocator smMemoryAlloc;
@@ -103,6 +104,8 @@ public:
 	void releaseWriteLock();
 	bool isServer(){return mIsServer;}
 	physx::PxController* createController( physx::PxControllerDesc &desc );
+   //Only cloth/particles can be gpu accelerated for now
+   bool isGpuSupported(){return mGpuSupport;}
 	//static
 	static bool restartSDK( bool destroyOnly = false, Px3World *clientWorld = NULL, Px3World *serverWorld = NULL );
 	static void releaseWriteLocks();
