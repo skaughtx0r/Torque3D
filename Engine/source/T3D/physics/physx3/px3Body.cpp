@@ -372,7 +372,7 @@ void Px3Body::setSimulationEnabled( bool enabled )
 
 void Px3Body::moveKinematicTo( const MatrixF &transform )
 {
-   AssertFatal( mActor, "Px3Body::moveTo - The actor is null!" );
+   AssertFatal( mActor, "Px3Body::moveKinematicTo - The actor is null!" );
 
    const bool isKinematic = mBodyFlags & BF_KINEMATIC;
    if (!isKinematic )
