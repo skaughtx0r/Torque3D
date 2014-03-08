@@ -214,9 +214,3 @@ ConsoleFunction( physicsDebugDraw, void, 2, 2, "physicsDebugDraw( bool enable )"
    if ( PHYSICSMGR )
       PHYSICSMGR->enableDebugDraw( dAtoi( argv[1] ) );
 }
-
-// andrewmac: Cloth Addon
-PhysicsCloth* PhysicsPlugin::createCloth(TSShapeInstance* shapeInst, const MatrixF &transform)
-{
-    return NULL;
-}

@@ -327,7 +327,7 @@ void BtBody::moveKinematicTo( const MatrixF &transform )
    const bool isKinematic = mBodyFlags & BF_KINEMATIC;
    if (!isKinematic )
    {
-      Con::errorf("Px3Body::moveKinematicTo is only for kinematic bodies.");
+      Con::errorf("BtBody::moveKinematicTo is only for kinematic bodies.");
       return;
    }
 

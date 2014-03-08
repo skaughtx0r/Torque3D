@@ -134,7 +134,7 @@ public:
    virtual PhysicsWorld* getWorld( const String &worldName ) const = 0;
 
    // andrewmac: Cloth
-   virtual PhysicsCloth* createCloth(TSShapeInstance* shapeInst, const MatrixF &transform);
+   virtual PhysicsCloth* createCloth(TSShapeInstance* shapeInst, const MatrixF &transform) = 0;
 
 protected:
 
