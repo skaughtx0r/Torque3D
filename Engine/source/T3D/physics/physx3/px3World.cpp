@@ -47,9 +47,6 @@ physx::PxCooking* Px3World::smCooking = NULL;
 physx::PxFoundation* Px3World::smFoundation = NULL;
 physx::PxProfileZoneManager* Px3World::smProfileZoneManager = NULL;
 physx::PxDefaultCpuDispatcher* Px3World::smCpuDispatcher=NULL;
-#ifdef TORQUE_OS_WIN32
-physx::PxCudaContextManager* Px3World::smCudaContextManager=NULL;
-#endif
 Px3ConsoleStream* Px3World::smErrorCallback = NULL;
 physx::PxVisualDebuggerConnection* Px3World::smPvdConnection=NULL;
 physx::PxDefaultAllocator Px3World::smMemoryAlloc;
@@ -80,7 +77,6 @@ Px3World::Px3World(): mScene( NULL ),
    mErrorReport( false ),
    mTickCount( 0 ),
    mIsEnabled( false ),
-   mGpuSupport( false ),
    mEditorTimeScale( 1.0f ),
    mAccumulator( 0 ),
    mControllerManager( NULL )
@@ -117,11 +113,6 @@ bool Px3World::restartSDK( bool destroyOnly, Px3World *clientWorld, Px3World *se
 
 	if(smCpuDispatcher)
 		smCpuDispatcher->release();
-
-#ifdef TORQUE_OS_WIN32
-   if(smCudaContextManager)
-      smCudaContextManager->release();
-#endif
 
    // Destroy the existing SDK.
 	if ( gPhysics3SDK )
@@ -189,23 +180,6 @@ bool Px3World::restartSDK( bool destroyOnly, Px3World *clientWorld, Px3World *se
 		return false;
 	}
 
-#ifdef TORQUE_OS_WIN32
-   //this will harmlessly fail on non NVidia GPU's
-   if(!smCudaContextManager)
-   {
-      physx::PxCudaContextManagerDesc desc;
-      smCudaContextManager = physx::PxCreateCudaContextManager(*smFoundation,desc,smProfileZoneManager);
-      if( smCudaContextManager )
-		{
-			if( !smCudaContextManager->contextIsValid() )
-			{
-				smCudaContextManager->release();
-				smCudaContextManager = NULL;
-			}
-		}
-   }
-#endif
-
    //just for testing-must remove, should really be enabled via console like physx 2 plugin
 #ifdef TORQUE_DEBUG
 	physx::PxVisualDebuggerConnectionFlags connectionFlags(physx::PxVisualDebuggerExt::getAllConnectionFlags());
@@ -241,8 +215,6 @@ void Px3World::destroyWorld()
 		mScene->release();
 		mScene = NULL;
 	}
-   mGpuSupport = false;
-
 }
 
 bool Px3World::initWorld( bool isServer, ProcessList *processList )
@@ -266,18 +238,7 @@ bool Px3World::initWorld( bool isServer, ProcessList *processList )
 		Con::printf("PhysX3 using Cpu: %d workers", smCpuDispatcher->getWorkerCount());
 	}
 
-#ifdef TORQUE_OS_WIN32
-   if(!sceneDesc.gpuDispatcher && smCudaContextManager)
-   {
-      if(smCudaContextManager->contextIsValid())
-      {
-         mGpuSupport = true;
-         sceneDesc.gpuDispatcher = smCudaContextManager->getGpuDispatcher();
-         Con::printf("PhysX3 using Gpu: %s", smCudaContextManager->getDeviceName());
-      }
-   }
-#endif
-   	
+ 	
    sceneDesc.flags |= physx::PxSceneFlag::eENABLE_CCD;
    sceneDesc.flags |= physx::PxSceneFlag::eENABLE_ACTIVETRANSFORMS;
 

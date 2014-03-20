@@ -102,8 +102,6 @@ beginModule( 'physX3' );
    copyFileToProject( $PHYSX3_SDK_PATH . "/Bin/win32/PhysX3CommonCHECKED_x86.dll",   "/game/PhysX3CommonCHECKED_x86.dll" );
    copyFileToProject( $PHYSX3_SDK_PATH . "/Bin/win32/PhysX3Cooking_x86.dll",   "/game/PhysX3Cooking_x86.dll" );
    copyFileToProject( $PHYSX3_SDK_PATH . "/Bin/win32/PhysX3CookingCHECKED_x86.dll",   "/game/PhysX3CookingCHECKED_x86.dll" );
-   copyFileToProject( $PHYSX3_SDK_PATH . "/Bin/win32/PhysX3Gpu_x86.dll",   "/game/PhysX3Gpu_x86.dll" );
-   copyFileToProject( $PHYSX3_SDK_PATH . "/Bin/win32/PhysX3GpuCHECKED_x86.dll",   "/game/PhysX3GpuCHECKED_x86.dll" );
 
 endModule();
 

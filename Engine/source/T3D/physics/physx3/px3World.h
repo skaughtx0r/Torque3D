@@ -61,7 +61,6 @@ protected:
 	ProcessList *mProcessList;
 	F32 mEditorTimeScale;
 	bool mErrorReport;
-   bool mGpuSupport;
 	physx::PxControllerManager* mControllerManager;
 	static Px3ConsoleStream *smErrorCallback;
 	static physx::PxDefaultAllocator smMemoryAlloc;
@@ -72,11 +71,6 @@ protected:
 	static physx::PxVisualDebuggerConnection* smPvdConnection;
    static F32 smPhysicsStepTime;
    static U32 smPhysicsMaxIterations;
-   // Only cloth and particles are GPU accelerated and also only
-   // available on NVidia hardware on Windows platforms.
-#ifdef TORQUE_OS_WIN32
-   static physx::PxCudaContextManager* smCudaContextManager;
-#endif
 
 	F32 mAccumulator;
 	bool _simulate(const F32 dt);
@@ -104,8 +98,6 @@ public:
 	void releaseWriteLock();
 	bool isServer(){return mIsServer;}
 	physx::PxController* createController( physx::PxControllerDesc &desc );
-   //Only cloth/particles can be gpu accelerated for now
-   bool isGpuSupported(){return mGpuSupport;}
 	//static
 	static bool restartSDK( bool destroyOnly = false, Px3World *clientWorld = NULL, Px3World *serverWorld = NULL );
 	static void releaseWriteLocks();

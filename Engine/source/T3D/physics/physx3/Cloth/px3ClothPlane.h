@@ -95,8 +95,6 @@ protected:
 
     bool mCollisionEnabled;
     bool mWindEnabled;
-    //GPU hardware acceleration for supported GPU's
-    bool mGpuEnabled;
 
     F32 mThickness;
     F32 mSolverFrequency;
@@ -131,16 +129,16 @@ protected:
     Point2F mPatchSize;
     MatrixF mResetXfm;
 
-    bool _createClothPatch();
+   bool _createClothPatch();
 	void _generateVertices();
 	void _initMaterial();
 	void _initBuffers();
-    void _recreateCloth( const MatrixF &transform );
+   void _recreateCloth( const MatrixF &transform );
 	void _releaseCloth();
 	void _releaseMesh();
-    void _updateClothProperties();
-    void _updateStaticCloth();
-    void _updateVBIB();
+   void _updateClothProperties();
+   void _updateStaticCloth();
+   void _updateVBIB();
 };
 
 #endif

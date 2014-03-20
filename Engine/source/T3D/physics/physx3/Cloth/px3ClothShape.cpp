@@ -153,7 +153,6 @@ void Px3ClothShape::_createCloth(ClothMesh* cMesh)
         // Setup default cloth properties.
         // This will later be replaced with per-cloth properties from datablock.
         cMesh->cloth->setClothFlag(physx::PxClothFlag::eSCENE_COLLISION, true);
-        cMesh->cloth->setClothFlag(physx::PxClothFlag::eGPU, mWorld->isGpuSupported());
         cMesh->cloth->setSolverFrequency(120.0f);
         cMesh->cloth->setDampingCoefficient(physx::PxVec3(0.0f));
         cMesh->cloth->setStretchConfig(physx::PxClothFabricPhaseType::eVERTICAL, physx::PxClothStretchConfig(1.0f)); //1.0f

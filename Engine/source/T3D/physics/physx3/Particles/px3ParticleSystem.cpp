@@ -68,8 +68,6 @@ bool Px3ParticleSystem::_createSystem()
 
 	// Attempt to create particle system.
 	physx::PxParticleSystem* system = gPhysics3SDK->createParticleSystem(mMaxParticles);
-   //enable GPU acceleration if supported
-   system->setParticleBaseFlag(physx::PxParticleBaseFlag::eGPU,mWorld->isGpuSupported());
    if ( system )
    {
       // Add the system to the PhysX scene.

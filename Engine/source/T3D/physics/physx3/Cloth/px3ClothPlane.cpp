@@ -91,7 +91,6 @@ Px3ClothPlane::Px3ClothPlane()
 
    mCollisionEnabled = false;
    mWindEnabled = false;
-   mGpuEnabled = true;
 
    mThickness = 0.1f;
    mSolverFrequency = 120.0f;
@@ -214,10 +213,6 @@ void Px3ClothPlane::initPersistFields()
    addField( "Wind", TypeBool, Offset( mWindEnabled, Px3ClothPlane ),
       "@brief Enables or disables wind driven by forest wind emitter.\n\n" );
 
-   addField( "Gpu", TypeBool, Offset( mGpuEnabled, Px3ClothPlane ),
-      "@brief Enables or Disables GPU acceleration of the cloth.\n\n"
-      "This feature only works with NVidia GPU's and on Windows Operating Systems.\n\n");
-
    // Cloth doesn't support scale.
    removeField( "scale" );
 }
@@ -254,7 +249,6 @@ U32 Px3ClothPlane::packUpdate( NetConnection *conn, U32 mask, BitStream *stream 
 
       stream->writeFlag( mCollisionEnabled );
       stream->writeFlag( mWindEnabled );
-      stream->writeFlag( mGpuEnabled );
 
       stream->write( mSolverFrequency );
       stream->write( mDampingCoef );
@@ -312,7 +306,6 @@ void Px3ClothPlane::unpackUpdate( NetConnection *conn, BitStream *stream )
 
    mCollisionEnabled = stream->readFlag();
    mWindEnabled = stream->readFlag();
-   mGpuEnabled = stream->readFlag();
 
    stream->read( &mSolverFrequency );
    stream->read( &mDampingCoef );
@@ -580,8 +573,6 @@ void Px3ClothPlane::_updateClothProperties()
       return;
 
    mCloth->setClothFlag(PxClothFlag::eSCENE_COLLISION, mCollisionEnabled);
-   bool gpuSupport = (mGpuEnabled && mWorld->isGpuSupported()) ? true : false;
-   mCloth->setClothFlag(PxClothFlag::eGPU, gpuSupport);
    mCloth->setSolverFrequency(mSolverFrequency);
    mCloth->setDampingCoefficient(PxVec3(mDampingCoef));
 
