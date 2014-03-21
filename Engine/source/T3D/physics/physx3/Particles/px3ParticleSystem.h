@@ -22,8 +22,8 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _Px3ParticleSystem_H
-#define _Px3ParticleSystem_H
+#ifndef _PX3PARTICLE_SYSTEM_H_
+#define _PX3PARTICLE_SYSTEM_H_
 
 #ifndef _PHYSX3_H_
 #include "T3D/physics/physx3/px3.h"
@@ -52,8 +52,8 @@ public:
    Px3ParticleSystem();
    virtual ~Px3ParticleSystem(); 
 
-	bool create(U32 maxParticles);
-	void release();
+   bool create(U32 maxParticles);
+   void release();
 
    bool addParticle(Point3F position, Point3F velocity);
    bool addParticle(Point3F position, Point3F velocity, U32& uniqueIndex);
@@ -61,38 +61,38 @@ public:
    bool removeParticle(U32 index);
    U32 removeParticles(U32 index, U32 count);
 
-	bool lock();
-	void unlock();
-	Vector<Point3F> readParticles();
+   bool lock();
+   void unlock();
+   Vector<Point3F> readParticles();
 
-	void applyForce(Point3F force);
-	U32 getParticleCount();
-	U32 getUniqueParticleIndex(U32 index);
-	U32 getIndexFromUniqueIndex(U32 index);
+   void applyForce(Point3F force);
+   U32 getParticleCount();
+   U32 getUniqueParticleIndex(U32 index);
+   U32 getIndexFromUniqueIndex(U32 index);
 
 protected:
    Px3World *mWorld;
    physx::PxScene *mScene;
 
-	physx::PxParticleExt::IndexPool* mIndexPool;
+   physx::PxParticleExt::IndexPool* mIndexPool;
    physx::PxParticleSystem* mParticleSystem;
-	physx::PxParticleReadData* mParticleReadData;
+   physx::PxParticleReadData* mParticleReadData;
 
-	U32 mNumParticles;
-	U32 mMaxParticles;
+   U32 mNumParticles;
+   U32 mMaxParticles;
 
-	Vector<physx::PxVec3> mPosition;
-	Vector<physx::PxVec3> mVelocity;
-	Vector<physx::PxU32> mIndex;
-	Vector<U32> mUniqueIndex;
+   Vector<physx::PxVec3> mPosition;
+   Vector<physx::PxVec3> mVelocity;
+   Vector<physx::PxU32> mIndex;
+   Vector<U32> mUniqueIndex;
 
    MatrixF mResetXfm;
    void _releaseSystem();
-	bool _createSystem();
-	bool _createParticles();
-	void _updateProperties();
+   bool _createSystem();
+   bool _createParticles();
+   void _updateProperties();
 
-	U32 mCurrentIndex;
+   U32 mCurrentIndex;
 };
 
-#endif
+#endif // _PX3PARTICLE_SYSTEM_H_

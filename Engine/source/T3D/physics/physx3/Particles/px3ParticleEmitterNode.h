@@ -22,8 +22,8 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _Px3ParticleEmitterNode_H
-#define _Px3ParticleEmitterNode_H
+#ifndef _PX3PARTICLE_EMITTER_NODE_H_
+#define _PX3PARTICLE_EMITTER_NODE_H_
 
 #ifndef _GAMEBASE_H_
 #include "T3D/gameBase/gameBase.h"
@@ -31,7 +31,7 @@
 #ifndef _PARTICLEEMITTERDUMMY_H_
 #include "T3D/fx/particleEmitterNode.h"
 #endif
-#ifndef _Px3ParticleEmitter_H
+#ifndef _PX3PARTICLE_EMITTER_H_
 #include "T3D/physics/physx3/Particles/px3ParticleEmitter.h"
 #endif
 
@@ -64,4 +64,4 @@ public:
    U32 timeSinceTick;
 };
 
-#endif
+#endif //_PX3PARTICLE_EMITTER_NODE_H_

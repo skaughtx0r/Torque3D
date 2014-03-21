@@ -50,4 +50,4 @@
 
 extern physx::PxPhysics* gPhysics3SDK;
 
-#endif
+#endif // _PHYSX3_

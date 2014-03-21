@@ -20,8 +20,8 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _PHYSX3_CASTS_H_
-#define _PHYSX3_CASTS_H_
+#ifndef _PX3CASTS_H_
+#define _PX3CASTS_H_
 
 #ifndef _MPOINT3_H_
 #include "math/mPoint3.h"
@@ -134,4 +134,4 @@ inline MatrixF px3Cast( const physx::PxTransform &xfm )
    return out;
 }
 
-#endif
+#endif //_PX3CASTS_H_

@@ -27,7 +27,7 @@
 #include "T3D/physics/physx3/px3.h"
 #include "T3D/physics/physx3/px3World.h"
 #include "T3D/physics/physx3/px3Plugin.h"
-#include "T3D/physics/physx3/px3Cast.h"
+#include "T3D/physics/physx3/px3Casts.h"
 #include "T3D/physics/physx3/px3Stream.h"
 
 #include "console/consoleTypes.h"
@@ -188,7 +188,7 @@ Vector<U32> Px3ParticleSystem::addParticles(Vector<Point3F> position, Vector<Poi
    if (count < 1)
       return 0;
 	// Add as many as we can to the list. Hopefully all of them.
-	for(int a = 0; a < count; a++)
+	for(U32 a = 0; a < count; a++)
 	{
 		posList.push_back(physx::PxVec3(position[a].x, position[a].y, position[a].z));
 		velList.push_back(physx::PxVec3(velocity[a].x, velocity[a].y, velocity[a].z));
@@ -317,7 +317,7 @@ Vector<Point3F> Px3ParticleSystem::readParticles()
 	physx::PxStrideIterator<const physx::PxParticleFlags> flagsIt(mParticleReadData->flagsBuffer);
 	physx::PxStrideIterator<const physx::PxVec3> positionIt(mParticleReadData->positionBuffer);
 
-	for (unsigned i = 0; i < mParticleReadData->validParticleRange; ++i, ++flagsIt, ++positionIt)
+	for (U32 i = 0; i < mParticleReadData->validParticleRange; ++i, ++flagsIt, ++positionIt)
 	{
 		// Checks to make sure the particle is valid.
 		if (*flagsIt & physx::PxParticleFlag::eVALID)

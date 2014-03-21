@@ -23,7 +23,7 @@
 
 #include "platform/platform.h"
 #include "T3D/physics/physx3/Cloth/Px3ClothShape.h"
-#include "T3D/physics/physx3/px3Cast.h"
+#include "T3D/physics/physx3/px3Casts.h"
 
 //-----------------------------------------------------------------------------
 // Constructor/Destructor

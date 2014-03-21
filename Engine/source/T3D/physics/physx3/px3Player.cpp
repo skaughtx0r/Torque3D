@@ -24,7 +24,7 @@
 #include "T3D/physics/physx3/px3Player.h"
 #include "T3D/physics/physicsPlugin.h"
 #include "T3D/physics/physx3/px3World.h"
-#include "T3D/physics/physx3/px3Cast.h"
+#include "T3D/physics/physx3/px3Casts.h"
 #include "T3D/physics/physx3/px3Utils.h"
 #include "collision/collision.h"
 

@@ -26,7 +26,7 @@
 #include "math/mPoint3.h"
 #include "math/mMatrix.h"
 #include "T3D/physics/physx3/px3.h"
-#include "T3D/physics/physx3/px3Cast.h"
+#include "T3D/physics/physx3/px3Casts.h"
 #include "T3D/physics/physx3/px3World.h"
 #include "T3D/physics/physx3/px3Stream.h"
 

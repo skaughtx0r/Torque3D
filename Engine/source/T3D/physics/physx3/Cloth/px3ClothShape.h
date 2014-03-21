@@ -21,8 +21,8 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _PX3CLOTHSHAPE_H_
-#define _PX3CLOTHSHAPE_H_
+#ifndef _PX3CLOTH_SHAPE_H_
+#define _PX3CLOTH_SHAPE_H_
 
 #include "T3D/physics/physx3/px3.h"
 #include "T3D/physics/physx3/px3World.h"
@@ -33,10 +33,8 @@
     #include "core/iTickable.h"
 #endif
 
-class Px3World;
-
 //-----------------------------------------------------------------------------
-// Px3Px3ClothShape provides the ability to load a shape into torque and have 
+// Px3ClothShape provides the ability to load a shape into torque and have 
 // individual mesh pieces appear as cloth in the world. The mesh must meet
 // the following criteria:
 //  1) Each mesh must be named Cloth-x or cloth-x where x is any positive
@@ -100,4 +98,4 @@ public:
    void setTransform( const MatrixF &mat );
 };
 
-#endif // _PX3CLOTHSHAPE_H_
+#endif // _PX3CLOTH_SHAPE_H_

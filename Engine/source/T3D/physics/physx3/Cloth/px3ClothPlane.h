@@ -21,8 +21,8 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _Px3ClothPlane_H
-#define _Px3ClothPlane_H
+#ifndef _PX3CLOTH_PLANE_H_
+#define _PX3CLOTH_PLANE_H_
 
 #ifndef _PHYSX3_H_
     #include "T3D/physics/physx3/px3.h"
@@ -141,4 +141,4 @@ protected:
    void _updateVBIB();
 };
 
-#endif
+#endif // _PX3CLOTH_PLANE_H_
