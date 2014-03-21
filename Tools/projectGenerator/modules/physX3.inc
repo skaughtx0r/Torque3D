@@ -80,7 +80,11 @@ beginModule( 'physX3' );
 
    // Includes
    addIncludePath( $PHYSX3_SDK_PATH . "/Include" );
-
+   addIncludePath( $PHYSX3_SDK_PATH . "/Include/common" );
+   addIncludePath( $PHYSX3_SDK_PATH . "/Include/extensions" );
+   addIncludePath( $PHYSX3_SDK_PATH . "/Include/foundation" );
+   addIncludePath( $PHYSX3_SDK_PATH . "/Include/characterkinematic" );
+      
    // Libs
    addProjectLibDir( $PHYSX3_SDK_PATH . "/Lib/win32" );
    addProjectLibInput( "PhysX3_x86.lib","PhysX3CHECKED_x86.lib" );
