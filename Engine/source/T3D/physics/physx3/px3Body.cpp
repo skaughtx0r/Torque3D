@@ -123,7 +123,7 @@ bool Px3Body::init(   PhysicsCollision *shape,
 				Con::errorf("PhysX3 Dynamic Triangle Mesh is not supported.");
 			}
 	   }
-	   physx::PxShape * pShape = mActor->createShape(*desc->pGeometry,*mMaterial,desc->pose);
+	   physx::PxShape * pShape = mActor->createShape(*desc->pGeometry,*mMaterial);
 	   physx::PxFilterData colData;
 	   if(isDebris)
 			colData.word0 = PX3_DEBRIS;
@@ -136,6 +136,8 @@ bool Px3Body::init(   PhysicsCollision *shape,
 	   else
 		   colData.word0 = PX3_DEFAULT;
 
+      //set local pose - actor->createShape with a local pose is deprecated in physx 3.3
+      pShape->setLocalPose(desc->pose);
       //set the skin width
       pShape->setContactOffset(0.01f);
       pShape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE,true);
