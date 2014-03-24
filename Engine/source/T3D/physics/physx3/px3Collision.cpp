@@ -177,13 +177,13 @@ bool Px3Collision::addHeightfield(   const U16 *heights,
 
          if ( holes && holes[ getMax( (S32)index - 1, 0 ) ] )     // row index for holes adjusted so PhysX collision shape better matches rendered terrain
          {
-            currentSample->materialIndex0 = 0;
-            currentSample->materialIndex1 = 0;
+            currentSample->materialIndex0 = physx::PxHeightFieldMaterial::eHOLE;
+            currentSample->materialIndex1 = physx::PxHeightFieldMaterial::eHOLE;
          }
          else
          {
-            currentSample->materialIndex0 = 1;
-            currentSample->materialIndex1 = 1;
+            currentSample->materialIndex0 = 0;
+            currentSample->materialIndex1 = 0;
          }
 
 		int flag = ( column + tess ) % 2;
