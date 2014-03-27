@@ -48,7 +48,6 @@ Running a project
    2. PhysX3CharacterKinematic_x86.dll
    3. PhysX3Common_x86.dll
    4. PhysX3Cooking_x86.dll
-   5. PhysX3Gpu_x86.dll
    
  - To run a debug project you will need the following from the SDK bin folder:
    1. PhysX3CHECKED_x86.dll
@@ -56,10 +55,7 @@ Running a project
    3. PhysX3CookingCHECKED_x86.dll
    4. PhysX3CommonCHECKED_x86.dll
    5. PhysX3CharacterKinematicCHECKED_x86.dll
-   6. PhysX3GpuCHECKED_x86.dll
  
 Place these files along side the exe and this should get you up and running.
 
-GPU Acceleration
-------------------------------------------
-PhysX 3.x only supports GPU acceleration of Cloth, Particles and Fluids, everything else is done with the CPU. GPU acceleration is only available on Windows operating systems and with NVidia hardware. A full list of supported cards can be found here: http://www.geforce.com/hardware/technology/physx/supported-gpus
+
