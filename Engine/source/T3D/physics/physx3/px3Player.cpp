@@ -322,7 +322,10 @@ void Px3Player::setScale( const Point3F &scale )
 
 Box3F Px3Player::getWorldBounds()
 {
-   Con::warnf( "Px3Player::getWorldBounds - not implemented" );
-   return Box3F::Invalid;
+   physx::PxBounds3 bounds;
+   physx::PxRigidDynamic *actor = mController->getActor();
+   physx::PxShape *shape = px3GetFirstShape(actor);
+   bounds = physx::PxShapeExt::getWorldBounds(*shape,*actor);
+   return px3Cast<Box3F>( bounds );
 }
 
