@@ -128,11 +128,7 @@ bool Px3Body::init(   PhysicsCollision *shape,
 	   if(isDebris)
 			colData.word0 = PX3_DEBRIS;
 	   else if(isTrigger)
-      {
-         //We don't want trigger shapes taking part in shape pair intersection tests
-         pShape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, false);
-		   colData.word0 = PX3_TRIGGER;
-      }
+        colData.word0 = PX3_TRIGGER;
 	   else
 		   colData.word0 = PX3_DEFAULT;
 
@@ -140,9 +136,10 @@ bool Px3Body::init(   PhysicsCollision *shape,
       pShape->setLocalPose(desc->pose);
       //set the skin width
       pShape->setContactOffset(0.01f);
+      pShape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, !isTrigger);
       pShape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE,true);
-		pShape->setSimulationFilterData(colData);
-		pShape->setQueryFilterData(colData);
+      pShape->setSimulationFilterData(colData);
+      pShape->setQueryFilterData(colData);
    }
 
    //mass & intertia has to be set after creating the shape
