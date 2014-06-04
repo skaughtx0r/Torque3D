@@ -115,6 +115,9 @@ public:
    // Continuous Collision Detection support,ignored if not supported by underlying plugin
    bool ccdEnabled;
 
+   // Activate triggers
+   bool activateTriggers;
+
 
    enum SimType
    {
@@ -152,7 +155,8 @@ class PhysicsShape : public GameBase
    typedef GameBase Parent;
 
 protected:
-
+   /// Datablock
+   PhysicsShapeData *mDataBlock;
    /// The abstracted physics actor.
    PhysicsBody *mPhysicsRep;
 
@@ -232,9 +236,6 @@ public:
 
    DECLARE_CONOBJECT( PhysicsShape );
 
-   /// Returns the PhysicsShapeData datablock.
-   PhysicsShapeData* getDataBlock() { return static_cast<PhysicsShapeData*>( Parent::getDataBlock() ); }
-
    // SimObject
    static void consoleInit();
    static void initPersistFields();
@@ -262,6 +263,14 @@ public:
    bool isDestroyed() const { return mDestroyed; }
    void destroy();
    void restore();
+
+   //triggers
+   void checkTriggers();
+   static void findCallback(SceneObject* obj,void * key);
+   virtual bool buildPolyList(   PolyListContext context, 
+                                    AbstractPolyList* polyList, 
+                                    const Box3F& box, 
+                                    const SphereF& sphere );
 
    /// Save the current transform as where we return to when a physics reset
    /// event occurs. This is automatically set in onAdd but some manipulators

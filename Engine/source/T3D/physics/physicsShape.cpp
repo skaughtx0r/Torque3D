@@ -35,6 +35,7 @@
 #include "ts/tsShapeInstance.h"
 #include "scene/sceneRenderState.h"
 #include "gfx/gfxTransformSaver.h"
+#include "T3D/trigger.h"
 #include "T3D/physics/physicsDebris.h"
 #include "T3D/fx/explosion.h"
 #include "T3D/containerQuery.h"
@@ -77,6 +78,7 @@ PhysicsShapeData::PhysicsShapeData()
       waterDampingScale( 1.0f ),
       buoyancyDensity( 0.0f ),
       ccdEnabled( false ),
+      activateTriggers( false ),
       simType( SimType_ClientServer )      
 {
 }
@@ -107,6 +109,9 @@ void PhysicsShapeData::initPersistFields()
    endGroup("Media");
 
    addGroup( "Physics" );
+
+      addField( "activateTriggers", TypeBool, Offset( activateTriggers, PhysicsShapeData ),
+         "@brief Allow this object to activate triggers.");
 
       addField( "ccd", TypeBool, Offset( ccdEnabled, PhysicsShapeData ),
          "@brief Enable CCD support for this body.\n\n"
@@ -199,6 +204,7 @@ void PhysicsShapeData::packData( BitStream *stream )
    stream->write( waterDampingScale );
    stream->write( buoyancyDensity );
    stream->write( ccdEnabled );
+   stream->write( activateTriggers );
 
    stream->writeInt( simType, SimType_Bits );
 
@@ -224,6 +230,7 @@ void PhysicsShapeData::unpackData( BitStream *stream )
    stream->read( &waterDampingScale );
    stream->read( &buoyancyDensity );
    stream->read( &ccdEnabled );
+   stream->read( &activateTriggers );
 
    simType = (SimType)stream->readInt( SimType_Bits );
 
@@ -399,6 +406,7 @@ ConsoleDocClass( PhysicsShape,
 
 PhysicsShape::PhysicsShape()
    :  mPhysicsRep( NULL ),
+      mDataBlock( NULL ),
       mWorld( NULL ),
       mShapeInst( NULL ),
       mResetPos( MatrixF::Identity ),
@@ -669,7 +677,8 @@ void PhysicsShape::onRemove()
 
 bool PhysicsShape::onNewDataBlock( GameBaseData *dptr, bool reload )
 {
-   if ( !Parent::onNewDataBlock( dptr, reload ) )
+   mDataBlock = static_cast<PhysicsShapeData*>(dptr);
+   if (!mDataBlock || !Parent::onNewDataBlock( dptr, reload ) )
       return false;
 
    if ( !isProperlyAdded() )
@@ -701,30 +710,29 @@ bool PhysicsShape::_createShape()
    mWorld = NULL;
    mAmbientSeq = -1;
 
-   PhysicsShapeData *db = getDataBlock();
-   if ( !db )
+   if ( !mDataBlock )
       return false;
 
    // Set the world box.
-   mObjBox = db->shape->bounds;
+   mObjBox = mDataBlock->shape->bounds;
    resetWorldBox();
 
    // If this is the server and its a client only simulation
    // object then disable our tick... the server doesn't do 
    // any work for this shape.
    if (  isServerObject() && 
-         db->simType == PhysicsShapeData::SimType_ClientOnly )
+         mDataBlock->simType == PhysicsShapeData::SimType_ClientOnly )
    {
       setProcessTick( false );
       return true;
    }
 
    // Create the shape instance.
-   mShapeInst = new TSShapeInstance( db->shape, isClientObject() );
+   mShapeInst = new TSShapeInstance( mDataBlock->shape, isClientObject() );
 
    if ( isClientObject() )
    {
-      mAmbientSeq = db->shape->findSequence( "ambient" );
+      mAmbientSeq = mDataBlock->shape->findSequence( "ambient" );
       _initAmbient();   
    }
 
@@ -735,7 +743,7 @@ bool PhysicsShape::_createShape()
    // it allows for us to enable/disable collision and having
    // all dynamic actors react correctly... waking up.
    // 
-   const bool isDynamic = db->mass > 0.0f;
+   const bool isDynamic = mDataBlock->mass > 0.0f;
 
    // If we aren't dynamic we don't need to tick.   
    setProcessTick( isDynamic || mPlayAmbient );
@@ -743,27 +751,27 @@ bool PhysicsShape::_createShape()
    // If this is the client and we're a server only object then
    // we don't need any physics representation... we're done.
    if (  isClientObject() && 
-         db->simType == PhysicsShapeData::SimType_ServerOnly )
+         mDataBlock->simType == PhysicsShapeData::SimType_ServerOnly )
       return true;
 
    mWorld = PHYSICSMGR->getWorld( isServerObject() ? "server" : "client" );
    U32 bodyFlags = isDynamic ? 0 : PhysicsBody::BF_KINEMATIC; 
-   if(db->ccdEnabled)
+   if(mDataBlock->ccdEnabled)
       bodyFlags |= PhysicsBody::BF_CCD;
 
    mPhysicsRep = PHYSICSMGR->createBody();
-   mPhysicsRep->init(   db->colShape, 
-                        db->mass, 
+   mPhysicsRep->init(   mDataBlock->colShape, 
+                        mDataBlock->mass, 
                         bodyFlags,  
                         this, 
                         mWorld );
 
-   mPhysicsRep->setMaterial( db->restitution, db->dynamicFriction, db->staticFriction );
+   mPhysicsRep->setMaterial( mDataBlock->restitution, mDataBlock->dynamicFriction, mDataBlock->staticFriction );
    
    if ( isDynamic )
    {
-      mPhysicsRep->setDamping( db->linearDamping, db->angularDamping );
-      mPhysicsRep->setSleepThreshold( db->linearSleepThreshold, db->angularSleepThreshold );
+      mPhysicsRep->setDamping( mDataBlock->linearDamping, mDataBlock->angularDamping );
+      mPhysicsRep->setSleepThreshold( mDataBlock->linearSleepThreshold, mDataBlock->angularSleepThreshold );
    }
 
    mPhysicsRep->setTransform( getTransform() );
@@ -849,8 +857,7 @@ void PhysicsShape::storeRestorePos()
 
 F32 PhysicsShape::getMass() const 
 { 
-   const PhysicsShapeData *db = const_cast<PhysicsShape*>( this )->getDataBlock();
-   return db->mass; 
+   return mDataBlock->mass; 
 }
 
 void PhysicsShape::applyImpulse( const Point3F &pos, const VectorF &vec )
@@ -910,6 +917,41 @@ void PhysicsShape::interpolateTick( F32 delta )
    setRenderTransform( state.getTransform() );
 }
 
+//from player.cpp
+static MatrixF IMat(1);
+
+bool PhysicsShape::buildPolyList(PolyListContext, AbstractPolyList* polyList, const Box3F&, const SphereF&)
+{
+   // Collision with the player is always against the player's object
+   // space bounding box axis aligned in world space.
+   Point3F pos;
+   getTransform().getColumn(3,&pos);
+   IMat.setColumn(3,pos);
+   polyList->setTransform(&IMat, Point3F(1.0f,1.0f,1.0f));
+   polyList->setObject(this);
+   polyList->addBox(mObjBox);
+   return true;
+}
+
+//TODO: this could be accelerated further by actually running through the physics plugin
+void PhysicsShape::checkTriggers()
+{
+   Box3F bbox = mPhysicsRep->getWorldBounds();
+   gServerContainer.findObjects(bbox,TriggerObjectType,findCallback,this);
+}
+
+void PhysicsShape::findCallback(SceneObject* obj,void *key)
+{
+   PhysicsShape* shape = reinterpret_cast<PhysicsShape*>(key);
+   U32 objectMask = obj->getTypeMask();
+
+   if (objectMask & TriggerObjectType) {
+      Trigger* pTrigger = static_cast<Trigger*>(obj);
+      pTrigger->potentialEnterObject(shape);
+   }
+
+}
+
 void PhysicsShape::processTick( const Move *move )
 {
    AssertFatal( mPhysicsRep && !mDestroyed, "PhysicsShape::processTick - Shouldn't be processing a destroyed shape!" );
@@ -947,6 +989,9 @@ void PhysicsShape::processTick( const Move *move )
    {
       mPhysicsRep->getState( &mState );
       _updateContainerForces();
+      //check triggers
+      if(isServerObject() && mDataBlock->activateTriggers)
+         checkTriggers();
    }
    else
    {
@@ -997,23 +1042,23 @@ void PhysicsShape::_updateContainerForces()
 
    ContainerQueryInfo info;
    info.box = getWorldBox();
-   info.mass = getDataBlock()->mass;
+   info.mass = mDataBlock->mass;
 
    // Find and retreive physics info from intersecting WaterObject(s)
    getContainer()->findObjects( getWorldBox(), WaterObjectType|PhysicalZoneObjectType, findRouter, &info );
 
    // Calculate buoyancy and drag
-   F32 angDrag = getDataBlock()->angularDamping;
-   F32 linDrag = getDataBlock()->linearDamping;
+   F32 angDrag = mDataBlock->angularDamping;
+   F32 linDrag = mDataBlock->linearDamping;
    F32 buoyancy = 0.0f;
    Point3F cmass = mPhysicsRep->getCMassPosition();
 
-   F32 density = getDataBlock()->buoyancyDensity;
+   F32 density = mDataBlock->buoyancyDensity;
    if ( density > 0.0f )
    {
       if ( info.waterCoverage > 0.0f )
       {
-         F32 waterDragScale = info.waterViscosity * getDataBlock()->waterDampingScale;
+         F32 waterDragScale = info.waterViscosity * mDataBlock->waterDampingScale;
          F32 powCoverage = mPow( info.waterCoverage, 0.25f );
 
          angDrag = mLerp( angDrag, angDrag * waterDragScale, powCoverage );
@@ -1026,7 +1071,7 @@ void PhysicsShape::_updateContainerForces()
       // Based on this blog post:
       // (http://reinot.blogspot.com/2005/11/oh-yes-they-float-georgie-they-all.html)
       // JCF: disabled!
-      Point3F buoyancyForce = buoyancy * -mWorld->getGravity() * TickSec * getDataBlock()->mass;
+      Point3F buoyancyForce = buoyancy * -mWorld->getGravity() * TickSec * mDataBlock->mass;
       mPhysicsRep->applyImpulse( cmass, buoyancyForce );      
    }
 
@@ -1100,8 +1145,7 @@ void PhysicsShape::destroy()
    // Stop doing tick processing for this SceneObject.
    setProcessTick( false );
 
-   PhysicsShapeData *db = getDataBlock();
-   if ( !db )
+   if ( !mDataBlock )
       return;
 
    const MatrixF &mat = getTransform();
@@ -1110,10 +1154,10 @@ void PhysicsShape::destroy()
       // We only create the destroyed object on the server
       // and let ghosting deal with updating the client.
 
-      if ( db->destroyedShape )
+      if ( mDataBlock->destroyedShape )
       {
          mDestroyedShape = new PhysicsShape();
-         mDestroyedShape->setDataBlock( db->destroyedShape );
+         mDestroyedShape->setDataBlock( mDataBlock->destroyedShape );
          mDestroyedShape->setTransform( mat );
          if ( !mDestroyedShape->registerObject() )
             delete mDestroyedShape.getObject();
@@ -1123,12 +1167,12 @@ void PhysicsShape::destroy()
    }
    
    // Let the physics debris create itself.
-   PhysicsDebris::create( db->debris, mat, lastLinVel );
+   PhysicsDebris::create( mDataBlock->debris, mat, lastLinVel );
 
-   if ( db->explosion )
+   if ( mDataBlock->explosion )
    {
       Explosion *splod = new Explosion();
-      splod->setDataBlock( db->explosion );
+      splod->setDataBlock( mDataBlock->explosion );
       splod->setTransform( mat );
       splod->setInitialState( getPosition(), mat.getUpVector(), 1.0f );
       if ( !splod->registerObject() )
@@ -1141,8 +1185,7 @@ void PhysicsShape::restore()
    if ( !mDestroyed )
       return;
 
-   PhysicsShapeData *db = getDataBlock();
-   const bool isDynamic = db && db->mass > 0.0f;
+   const bool isDynamic = mDataBlock && mDataBlock->mass > 0.0f;
 
    if ( mDestroyedShape )   
       mDestroyedShape->deleteObject();
