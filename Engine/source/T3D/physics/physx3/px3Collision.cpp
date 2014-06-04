@@ -105,7 +105,10 @@ bool Px3Collision::addConvex(  const Point3F *points,
 	convexMesh = gPhysics3SDK->createConvexMesh(in);
 
 	Px3CollisionDesc *desc = new Px3CollisionDesc;
-	desc->pGeometry = new physx::PxConvexMeshGeometry(convexMesh);
+   physx::PxVec3 scale = px3Cast<physx::PxVec3>(localXfm.getScale());
+   physx::PxQuat rotation = px3Cast<physx::PxQuat>(QuatF(localXfm));
+   physx::PxMeshScale meshScale(scale,rotation);
+	desc->pGeometry = new physx::PxConvexMeshGeometry(convexMesh,meshScale);
 	desc->pose = px3Cast<physx::PxTransform>(localXfm);
 	mColShapes.push_back(desc);
 	return true;
