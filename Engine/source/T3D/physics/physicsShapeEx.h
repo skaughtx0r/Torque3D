@@ -20,11 +20,11 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _PHYSICSSHAPE_H_
-#define _PHYSICSSHAPE_H_
+#ifndef _PHYSICSSHAPEEX_H_
+#define _PHYSICSSHAPEEX_H_
 
-#ifndef _GAMEBASE_H_
-   #include "T3D/gameBase/gameBase.h"
+#ifndef _SHAPEBASE_H_
+   #include "T3D/shapeBase.h"
 #endif
 #ifndef __RESOURCE_H__
    #include "core/resource.h"
@@ -49,18 +49,18 @@ class PhysicsDebrisData;
 class ExplosionData;
 
 
-class PhysicsShapeData : public GameBaseData
+class PhysicsShapeExData : public ShapeBaseData
 {
-   typedef GameBaseData Parent;
+   typedef ShapeBaseData Parent;
 
    void _onResourceChanged( const Torque::Path &path );
 
 public:
 
-   PhysicsShapeData();
-   virtual ~PhysicsShapeData();
+   PhysicsShapeExData();
+   virtual ~PhysicsShapeExData();
 
-   DECLARE_CONOBJECT(PhysicsShapeData);
+   DECLARE_CONOBJECT(PhysicsShapeExData);
    static void initPersistFields();   
    bool onAdd();
    void onRemove();
@@ -115,6 +115,7 @@ public:
    // Continuous Collision Detection support,ignored if not supported by underlying plugin
    bool ccdEnabled;
 
+
    enum SimType
    {
       /// This physics representation only exists on the client
@@ -136,23 +137,23 @@ public:
    
    SimObjectRef< PhysicsDebrisData > debris;   
    SimObjectRef< ExplosionData > explosion;   
-   SimObjectRef< PhysicsShapeData > destroyedShape;
+   SimObjectRef< PhysicsShapeExData > destroyedShape;
 };
 
-typedef PhysicsShapeData::SimType PhysicsSimType;
-DefineEnumType( PhysicsSimType );
+typedef PhysicsShapeExData::SimType PhysicsExSimType;
+DefineEnumType( PhysicsExSimType );
 
 class TSThread;
 
 
 /// A simple single body dynamic physics object.
-class PhysicsShape : public GameBase
+class PhysicsShapeEx : public ShapeBase
 {
-   typedef GameBase Parent;
+   typedef ShapeBase Parent;
 
 protected:
    /// Datablock
-   PhysicsShapeData *mDataBlock;
+   PhysicsShapeExData *mDataBlock;
    /// The abstracted physics actor.
    PhysicsBody *mPhysicsRep;
 
@@ -176,19 +177,19 @@ protected:
    /// The previous and current render states.
    PhysicsState mRenderState[2];
 
-   /// True if the PhysicsShape has been destroyed ( gameplay ).
+   /// True if the PhysicsShapeEx has been destroyed ( gameplay ).
    bool mDestroyed;
 
    /// Enables automatic playing of the animation named "ambient" (if it exists) 
-   /// when the PhysicsShape is loaded.
+   /// when the PhysicsShapeEx is loaded.
    bool mPlayAmbient;
    S32 mAmbientSeq;
    TSThread* mAmbientThread;
 
-   /// If a specified to create one in the PhysicsShape data, this is the 
-   /// subshape created when this PhysicsShape is destroyed.
-   /// Is only assigned (non null) on the serverside PhysicsShape.
-   SimObjectPtr< PhysicsShape > mDestroyedShape;
+   /// If a specified to create one in the PhysicsShapeEx data, this is the 
+   /// subshape created when this PhysicsShapeEx is destroyed.
+   /// Is only assigned (non null) on the serverside PhysicsShapeEx.
+   SimObjectPtr< PhysicsShapeEx > mDestroyedShape;
 
    ///
    enum MaskBits 
@@ -227,10 +228,10 @@ protected:
 
 public:
 
-   PhysicsShape();
-   virtual ~PhysicsShape();
+   PhysicsShapeEx();
+   virtual ~PhysicsShapeEx();
 
-   DECLARE_CONOBJECT( PhysicsShape );
+   DECLARE_CONOBJECT( PhysicsShapeEx );
 
    // SimObject
    static void consoleInit();
@@ -260,10 +261,18 @@ public:
    void destroy();
    void restore();
 
+   //triggers
+   void checkTriggers();
+   static void findCallback(SceneObject* obj,void * key);
+   virtual bool buildPolyList(   PolyListContext context, 
+                                    AbstractPolyList* polyList, 
+                                    const Box3F& box, 
+                                    const SphereF& sphere );
+
    /// Save the current transform as where we return to when a physics reset
    /// event occurs. This is automatically set in onAdd but some manipulators
    /// such as Prefab need to make use of this.
    void storeRestorePos();
 };
 
-#endif // _PHYSICSSHAPE_H_
+#endif // _PhysicsShapeEx_H_
