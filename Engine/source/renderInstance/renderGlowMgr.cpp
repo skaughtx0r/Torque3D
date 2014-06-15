@@ -86,7 +86,6 @@ RenderGlowMgr::RenderGlowMgr()
                                  GFXFormatR8G8B8A8,
                                  Point2I( 512, 512 ) )
 {
-   notifyType( RenderPassManager::RIT_Interior );
    notifyType( RenderPassManager::RIT_Decal );
    notifyType( RenderPassManager::RIT_Translucent );
 
@@ -151,6 +150,9 @@ void RenderGlowMgr::render( SceneRenderState *state )
    GFXDEBUGEVENT_SCOPE( RenderGlowMgr_Render, ColorI::GREEN );
 
    GFXTransformSaver saver;
+
+   // Respect the current viewport
+   mNamedTarget.setViewport(GFX->getViewport());
 
    // Tell the superclass we're about to render, preserve contents
    const bool isRenderingToTarget = _onPreRender( state, true );

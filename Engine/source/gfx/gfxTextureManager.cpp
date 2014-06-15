@@ -35,11 +35,16 @@
 #include "console/consoleTypes.h"
 #include "console/engineAPI.h"
 
+using namespace Torque;
 
 //#define DEBUG_SPEW
 
 
 S32 GFXTextureManager::smTextureReductionLevel = 0;
+
+String GFXTextureManager::smMissingTexturePath("core/art/missingTexture");
+String GFXTextureManager::smUnavailableTexturePath("core/art/unavailable");
+String GFXTextureManager::smWarningTexturePath("core/art/warnmat");
 
 GFXTextureManager::EventSignal GFXTextureManager::smEventSignal;
 
@@ -51,6 +56,19 @@ void GFXTextureManager::init()
       "The number of mipmap levels to drop on loaded textures to reduce "
       "video memory usage.  It will skip any textures that have been defined "
       "as not allowing down scaling.\n"
+      "@ingroup GFX\n" );
+
+   Con::addVariable( "$pref::Video::missingTexturePath", TypeRealString, &smMissingTexturePath,
+      "The file path of the texture to display when the requested texture is missing.\n"
+      "@ingroup GFX\n" );
+
+   Con::addVariable( "$pref::Video::unavailableTexturePath", TypeRealString, &smUnavailableTexturePath,
+      "@brief The file path of the texture to display when the requested texture is unavailable.\n\n"
+      "Often this texture is used by GUI controls to indicate that the request image is unavailable.\n"
+      "@ingroup GFX\n" );
+
+   Con::addVariable( "$pref::Video::warningTexturePath", TypeRealString, &smWarningTexturePath,
+      "The file path of the texture used to warn the developer.\n"
       "@ingroup GFX\n" );
 }
 

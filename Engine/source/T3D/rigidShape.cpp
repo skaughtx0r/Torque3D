@@ -198,9 +198,9 @@ namespace {
    static F32 sRestTol = 0.5;             // % of gravity energy to be at rest
    static int sRestCount = 10;            // Consecutive ticks before comming to rest
 
-   const U32 sCollisionMoveMask = (TerrainObjectType        | InteriorObjectType   |
-      PlayerObjectType         | StaticShapeObjectType    | VehicleObjectType    |
-      VehicleBlockerObjectType);
+   const U32 sCollisionMoveMask = ( TerrainObjectType     | PlayerObjectType  | 
+                                    StaticShapeObjectType | VehicleObjectType |
+                                    VehicleBlockerObjectType );
 
    const U32 sServerCollisionMask = sCollisionMoveMask; // ItemObjectType
    const U32 sClientCollisionMask = sCollisionMoveMask;
@@ -774,7 +774,8 @@ void RigidShape::processTick(const Move* move)
 
       // Update the physics based on the integration rate
       S32 count = mDataBlock->integration;
-      updateWorkingCollisionSet(getCollisionMask());
+      if (!mDisableMove)
+         updateWorkingCollisionSet(getCollisionMask());
       for (U32 i = 0; i < count; i++)
          updatePos(TickSec / count);
 
@@ -1001,6 +1002,11 @@ void RigidShape::setTransform(const MatrixF& newMat)
    Parent::setTransform(newMat);
    mRigid.atRest = false;
    mContacts.clear();
+}
+
+void RigidShape::forceClientTransform()
+{
+   setMaskBits(ForceMoveMask);
 }
 
 
@@ -1456,6 +1462,8 @@ U32 RigidShape::packUpdate(NetConnection *con, U32 mask, BitStream *stream)
 
    if (stream->writeFlag(mask & PositionMask))
    {
+      stream->writeFlag(mask & ForceMoveMask);
+
       stream->writeCompressedPoint(mRigid.linPosition);
       mathWrite(*stream, mRigid.angPosition);
       mathWrite(*stream, mRigid.linMomentum);
@@ -1480,6 +1488,10 @@ void RigidShape::unpackUpdate(NetConnection *con, BitStream *stream)
 
    if (stream->readFlag()) 
    {
+      // Check if we need to jump to the given transform
+      // rather than interpolate to it.
+      bool forceUpdate = stream->readFlag();
+
       mPredictionCount = sMaxPredictionTicks;
       F32 speed = mRigid.linVelocity.len();
       mDelta.warpRot[0] = mRigid.angPosition;
@@ -1492,7 +1504,7 @@ void RigidShape::unpackUpdate(NetConnection *con, BitStream *stream)
       mRigid.atRest = stream->readFlag();
       mRigid.updateVelocity();
 
-      if (isProperlyAdded()) 
+      if (!forceUpdate && isProperlyAdded()) 
       {
          // Determine number of ticks to warp based on the average
          // of the client and server velocities.
@@ -1709,4 +1721,13 @@ DefineEngineMethod( RigidShape, freezeSim, void, (bool isFrozen),,
    "@see ShapeBaseData")
 {
    object->freezeSim(isFrozen);
+}
+
+DefineEngineMethod( RigidShape, forceClientTransform, void, (),,
+   "@brief Forces the client to jump to the RigidShape's transform rather then warp to it.\n\n")
+{
+   if(object->isServerObject())
+   {
+      object->forceClientTransform();
+   }
 }
