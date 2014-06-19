@@ -123,7 +123,13 @@ bool Px3Body::init(   PhysicsCollision *shape,
 				Con::errorf("PhysX3 Dynamic Triangle Mesh is not supported.");
 			}
 	   }
-	   physx::PxShape * pShape = mActor->createShape(*desc->pGeometry,*mMaterial);
+      physx::PxShape * pShape = NULL;
+      //only heightfield have been implemented with material indexes. TriangleMesh is a TODO
+      if(desc->materials.size())
+         pShape = mActor->createShape(*desc->pGeometry,desc->materials.address(),(physx::PxU32)desc->materials.size());
+      else
+	      pShape = mActor->createShape(*desc->pGeometry,*mMaterial);
+
 	   physx::PxFilterData colData;
 	   if(isDebris)
 			colData.word0 = PX3_DEBRIS;

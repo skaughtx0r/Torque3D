@@ -25,6 +25,7 @@
 #include "T3D/physics/physx3/px3World.h"
 #include "T3D/physics/physx3/px3Plugin.h"
 #include "T3D/physics/physx3/px3Collision.h"
+#include "T3D/physics/physx3/px3Material.h"
 #include "T3D/physics/physx3/px3Body.h"
 #include "T3D/physics/physx3/px3Player.h"
 #include "T3D/physics/physx3/Cloth/px3ClothShape.h"
@@ -232,4 +233,11 @@ PhysicsCloth* Px3Plugin::createCloth(TSShapeInstance* shapeInst, const MatrixF &
     Px3ClothShape* cloth = new Px3ClothShape();
     cloth->create(shapeInst, transform);
     return cloth;
+}
+
+PhysicsMaterial* Px3Plugin::createMaterial(const F32 restitution,const F32 staticFriction,const F32 dynamicFritction)
+{
+   Px3Material* material  = new Px3Material();
+   material->create(restitution,staticFriction,dynamicFritction);
+   return material;
 }

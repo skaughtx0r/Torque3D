@@ -56,7 +56,9 @@ public:
    virtual U32 getWorldCount() const;
 
    // andrewmac: Cloth		
-   PhysicsCloth* createCloth(TSShapeInstance* shapeInst, const MatrixF &transform);
+   virtual PhysicsCloth* createCloth(TSShapeInstance* shapeInst, const MatrixF &transform);
+
+   virtual PhysicsMaterial* createMaterial(const F32 restitution,const F32 staticFriction,const F32 dynamicFritction);
 };
 
 #endif  // _PX3PLUGIN_H_

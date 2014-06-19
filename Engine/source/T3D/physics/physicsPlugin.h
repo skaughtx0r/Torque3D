@@ -54,7 +54,7 @@ class PhysicsBody;
 class PhysicsWorld;
 class PhysicsPlayer;
 class PhysicsCollision;
-
+class PhysicsMaterial;
 
 typedef Delegate<PhysicsObject*( const SceneObject *)> CreatePhysicsObjectFn; 
 typedef Map<StringNoCase, CreatePhysicsObjectFn> CreateFnMap;
@@ -135,6 +135,8 @@ public:
 
    // andrewmac: Cloth
    virtual PhysicsCloth* createCloth(TSShapeInstance* shapeInst, const MatrixF &transform) = 0;
+
+   virtual PhysicsMaterial* createMaterial(const F32 restitution,const F32 staticFriction,const F32 dynamicFritction)=0;
 
 protected:
 
