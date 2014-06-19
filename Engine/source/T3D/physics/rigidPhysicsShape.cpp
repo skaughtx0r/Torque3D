@@ -916,8 +916,6 @@ static MatrixF IMat(1);
 
 bool RigidPhysicsShape::buildPolyList(PolyListContext, AbstractPolyList* polyList, const Box3F&, const SphereF&)
 {
-   // Collision with the player is always against the player's object
-   // space bounding box axis aligned in world space.
    Point3F pos;
    getTransform().getColumn(3,&pos);
    IMat.setColumn(3,pos);
@@ -928,10 +926,10 @@ bool RigidPhysicsShape::buildPolyList(PolyListContext, AbstractPolyList* polyLis
 }
 
 //TODO: this could be accelerated further by actually running through the physics plugin
-void RigidPhysicsShape::checkTriggers()
+void RigidPhysicsShape::checkCollisions()
 {
    Box3F bbox = getWorldBox();//mPhysicsRep->getWorldBounds();
-   gServerContainer.findObjects(bbox,TriggerObjectType,findCallback,this);
+   gServerContainer.findObjects(bbox,TriggerObjectType|GameBaseObjectType,findCallback,this);
 }
 
 void RigidPhysicsShape::findCallback(SceneObject* obj,void *key)
@@ -942,6 +940,12 @@ void RigidPhysicsShape::findCallback(SceneObject* obj,void *key)
    if (objectMask & TriggerObjectType) {
       Trigger* pTrigger = static_cast<Trigger*>(obj);
       pTrigger->potentialEnterObject(shape);
+   }
+    else if (objectMask & GameBaseObjectType) {
+      GameBase* col = static_cast<GameBase*>(obj);
+      //don't want collision with ourselves
+      if(col != shape)
+         shape->queueCollision(col,shape->getVelocity() - col->getVelocity());
    }
 
 }
@@ -985,7 +989,10 @@ void RigidPhysicsShape::processTick( const Move *move )
       _updateContainerForces();
       //check triggers
       if(isServerObject())
-         checkTriggers();
+      {
+         checkCollisions();
+         notifyCollision();
+      }
    }
    else
    {

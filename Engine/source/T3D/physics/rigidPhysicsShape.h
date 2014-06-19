@@ -261,8 +261,8 @@ public:
    void destroy();
    void restore();
 
-   //triggers
-   void checkTriggers();
+   //Check collisions and triggers
+   void checkCollisions();
    static void findCallback(SceneObject* obj,void * key);
    virtual bool buildPolyList(   PolyListContext context, 
                                     AbstractPolyList* polyList, 
