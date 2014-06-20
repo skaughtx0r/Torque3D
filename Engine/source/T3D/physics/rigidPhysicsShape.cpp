@@ -46,6 +46,8 @@ using namespace Torque;
 
 bool RigidPhysicsShape::smNoCorrections = false;
 bool RigidPhysicsShape::smNoSmoothing = false;
+//collision filter/mask
+static U32 sCollisionFilter = TriggerObjectType|GameBaseObjectType|StaticObjectType|StaticShapeObjectType;
 
 ImplementEnumType( RigidPhysicsSimType,
    "How to handle the physics simulation with the client's and server.\n"
@@ -316,74 +318,6 @@ bool RigidPhysicsShapeData::preload( bool server, String &errorBuffer )
          return false;
       }
    }   
-
-   // My convex demcomposion test
-   /*
-   // Get the verts and triangles for the first visible detail.
-   ConcretePolyList polyList;
-   polyList.setTransform( &MatrixF::Identity, Point3F::One );
-   TSShapeInstance shapeInst( shape, false );
-   shapeInst.animate(0);
-   if ( !shapeInst.buildPolyList( &polyList, 0 ) )
-      return false;
-
-   // Gah... Ratcliff's lib works on doubles... why, oh why?
-   Vector<F64> doubleVerts;
-   doubleVerts.setSize( polyList.mVertexList.size() * 3 );
-   for ( U32 i=0; i < polyList.mVertexList.size(); i++ )
-   {
-      doubleVerts[ ( i * 3 ) + 0 ] = (F64)polyList.mVertexList[i].x;
-      doubleVerts[ ( i * 3 ) + 1 ] = (F64)polyList.mVertexList[i].y;
-      doubleVerts[ ( i * 3 ) + 2 ] = (F64)polyList.mVertexList[i].z;
-   }
-
-   using namespace ConvexDecomposition;
-
-   class ConvexBuilder : public ConvexDecompInterface
-   {
-   public:
-
-      ConvexBuilder() { }
-
-      ~ConvexBuilder() 
-      {
-         for ( U32 i=0; i < mHulls.size(); i++ )
-            delete mHulls[i];
-      }
-
-      virtual void ConvexDecompResult( ConvexResult &result )
-      {
-         FConvexResult *hull = new FConvexResult( result );
-         mHulls.push_back( hull );
-      }
-
-      Vector<FConvexResult*> mHulls;
-   };
-
- 	DecompDesc d;
-   d.mVcount       =	polyList.mVertexList.size();
-   d.mVertices     = doubleVerts.address();
-   d.mTcount       = polyList.mIndexList.size() / 3;
-   d.mIndices      = polyList.mIndexList.address();
-   d.mDepth        = 3;
-   d.mCpercent     = 20.0f;
-   d.mPpercent     = 30.0f;
-   d.mMaxVertices  = 32;
-   d.mSkinWidth    = 0.05f; // Need to expose this!
-
-   ConvexBuilder builder;
-   d.mCallback = &builder;
- 
-   if ( performConvexDecomposition( d ) < 1 || builder.mHulls.empty() )
-      return false;
-
-   // Add all the convex hull results into the collision shape.
-   colShape = PHYSICSMGR->createCollision();
-   for ( U32 i=0; i < builder.mHulls.size(); i++ )
-      colShape->addConvex( (const Point3F*)builder.mHulls[i]->mHullVertices, 
-                           builder.mHulls[i]->mHullVcount,
-                           MatrixF::Identity );
-   */
 
    return true;
 }
@@ -929,7 +863,7 @@ bool RigidPhysicsShape::buildPolyList(PolyListContext, AbstractPolyList* polyLis
 void RigidPhysicsShape::checkCollisions()
 {
    Box3F bbox = getWorldBox();//mPhysicsRep->getWorldBounds();
-   gServerContainer.findObjects(bbox,TriggerObjectType|GameBaseObjectType,findCallback,this);
+   gServerContainer.findObjects(bbox,sCollisionFilter,findCallback,this);
 }
 
 void RigidPhysicsShape::findCallback(SceneObject* obj,void *key)
