@@ -33,6 +33,7 @@
 #include "T3D/physics/physicsCollision.h"
 #include "collision/concretePolyList.h"
 #include "ts/tsShapeInstance.h"
+#include "T3D/tsStatic.h"
 #include "scene/sceneRenderState.h"
 #include "gfx/gfxTransformSaver.h"
 #include "T3D/trigger.h"
@@ -47,7 +48,7 @@ using namespace Torque;
 bool RigidPhysicsShape::smNoCorrections = false;
 bool RigidPhysicsShape::smNoSmoothing = false;
 //collision filter/mask
-static U32 sCollisionFilter = TriggerObjectType|GameBaseObjectType|StaticObjectType|StaticShapeObjectType;
+static U32 sCollisionFilter = TriggerObjectType|GameBaseObjectType|StaticShapeObjectType;
 
 ImplementEnumType( RigidPhysicsSimType,
    "How to handle the physics simulation with the client's and server.\n"
@@ -875,12 +876,19 @@ void RigidPhysicsShape::findCallback(SceneObject* obj,void *key)
       Trigger* pTrigger = static_cast<Trigger*>(obj);
       pTrigger->potentialEnterObject(shape);
    }
-    else if (objectMask & GameBaseObjectType) {
+   else if (objectMask & GameBaseObjectType) {
       GameBase* col = static_cast<GameBase*>(obj);
       //don't want collision with ourselves
       if(col != shape)
          shape->queueCollision(col,shape->getVelocity() - col->getVelocity());
    }
+   else if(objectMask & StaticShapeObjectType)
+   {
+      SceneObject *col = static_cast<SceneObject*>(obj);
+      if(col != shape)
+         shape->queueCollision(col,shape->getVelocity());
+   }
+   
 
 }
 
