@@ -117,6 +117,9 @@ void RigidPhysicsShapeData::initPersistFields()
          "Continuous Collision Detection support for fast moving objects.\n"
          "@note Currently only supported in the PhysX 3 physics plugin.");
 
+      //remove the ShapeBaseData mass field and add our own
+      removeField("mass");
+
       addField( "mass", TypeF32, Offset( mass, RigidPhysicsShapeData ),
          "@brief Value representing the mass of the shape.\n\n"
          "A shape's mass influences the magnitude of any force exerted on it. "

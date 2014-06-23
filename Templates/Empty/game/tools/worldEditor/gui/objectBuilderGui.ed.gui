@@ -1112,9 +1112,9 @@ function PhysicsShapeData::create( %datablock )
    return %obj;
 }
 
-function PhysicsShapeExData::create( %datablock )
+function RigidPhysicsShapeData::create( %datablock )
 {
-   %obj = new PhysicsShapeEx()
+   %obj = new RigidPhysicsShape()
    {
 		dataBlock = %datablock;
 		parentGroup = EWCreatorWindow.objectGroup;
