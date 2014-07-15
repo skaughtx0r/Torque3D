@@ -1,4 +1,4 @@
-Torque 3D v3.5.1 - PhysX 3.3
+Torque 3D v3.5.1 - PhysX 3.3 Advanced
 ==========================
 
 Sample Project Available At:
