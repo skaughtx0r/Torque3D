@@ -61,7 +61,7 @@ Px3ParticleSystem::~Px3ParticleSystem()
 
 bool Px3ParticleSystem::_createSystem()
 {
-   mWorld->releaseWriteLock();
+   mWorld->lockScene();
 
 	// Clear old data.
    _releaseSystem();
@@ -76,9 +76,12 @@ bool Px3ParticleSystem::_createSystem()
 
 		// Set properties.
       _updateProperties();
+      mWorld->unlockScene();
       return true;
-    }
-    return false;
+   }
+
+   mWorld->unlockScene();
+   return false;
 }
 
 void Px3ParticleSystem::_releaseSystem()

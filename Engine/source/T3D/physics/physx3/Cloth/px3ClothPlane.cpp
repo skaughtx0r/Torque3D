@@ -524,7 +524,7 @@ void Px3ClothPlane::_generateVertices()
 bool Px3ClothPlane::_createClothPatch()
 {
    // Make sure we can change the world.
-   mWorld->releaseWriteLock();
+   mWorld->lockScene();
 
    // Generate Vert/Prim data.
    _generateVertices();
@@ -564,6 +564,8 @@ bool Px3ClothPlane::_createClothPatch()
    }
         
    _updateStaticCloth();
+
+   mWorld->lockScene();
    return true;
 }
 

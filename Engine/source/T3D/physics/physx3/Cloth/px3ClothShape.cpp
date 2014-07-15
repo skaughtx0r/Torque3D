@@ -111,7 +111,7 @@ void Px3ClothShape::_createFabric(ClothMesh* cMesh)
 void Px3ClothShape::_createCloth(ClothMesh* cMesh)
 {
     // Make sure we can change the world.
-    mWorld->releaseWriteLock();
+    mWorld->lockScene();
 
     // Create fabric if it doesn't exist.
     if ( cMesh->fabric == NULL )
@@ -160,6 +160,8 @@ void Px3ClothShape::_createCloth(ClothMesh* cMesh)
         cMesh->cloth->setStretchConfig(physx::PxClothFabricPhaseType::eSHEARING, physx::PxClothStretchConfig(0.75f)); // 0.75f
         cMesh->cloth->setStretchConfig(physx::PxClothFabricPhaseType::eBENDING, physx::PxClothStretchConfig(0.5f)); // 0.5f
     }
+
+    mWorld->unlockScene();
 }
 
 void Px3ClothShape::_releaseCloth(ClothMesh* cMesh)
