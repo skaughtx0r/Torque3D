@@ -401,11 +401,19 @@ void Px3Body::setTransform( const MatrixF &transform )
    // to avoid write lock errors from PhysX right now.
    mWorld->releaseWriteLock();
 
+   //static actors must be removed from the scene before moving them
+   if(mIsStatic)
+   {
+      mWorld->getScene()->removeActor(*mActor);
+   }
    
    mActor->setGlobalPose(px3Cast<physx::PxTransform>(transform),false);
 
    if(mIsStatic)
-	   return;
+   {
+      mWorld->getScene()->addActor(*mActor);
+      return;
+   }
 
 	physx::PxRigidDynamic *actor = mActor->is<physx::PxRigidDynamic>();
 	bool kinematic = actor->getRigidDynamicFlags() & physx::PxRigidDynamicFlag::eKINEMATIC;
