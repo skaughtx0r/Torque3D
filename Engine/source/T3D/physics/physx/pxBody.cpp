@@ -402,3 +402,16 @@ void PxBody::applyImpulse( const Point3F &origin, const Point3F &force )
                               NX_IMPULSE );
 }
 
+void PxBody::applyForce(const Point3F &origin, const Point3F &force)
+{
+	AssertFatal(mActor, "PxBody::applyForce - The actor is null!");
+
+	// This sucks, but it has to happen if we want
+	// to avoid write lock errors from PhysX right now.
+	mWorld->releaseWriteLock();
+
+	if (mIsEnabled && isDynamic())
+		mActor->addForceAtPos(	pxCast<NxVec3>( force ),
+								pxCast<NxVec3>( origin ),
+								NX_FORCE );
+}

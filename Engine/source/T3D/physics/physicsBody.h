@@ -113,6 +113,9 @@ public:
 
    ///
    virtual void applyImpulse( const Point3F &origin, const Point3F &force ) = 0;
+
+   ///
+   virtual void applyForce(const Point3F &origin, const Point3F &force) = 0;
 };
 
 
