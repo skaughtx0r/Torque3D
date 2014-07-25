@@ -167,8 +167,11 @@ void TritonWake::unpackUpdate(NetConnection *conn, BitStream *stream)
 void TritonWake::updateWake(Triton::Ocean* ocean)
 {
    if(!mWake) {
-      mWake = new Triton::WakeGenerator(ocean, false, 0.0, 9.144, 4.0);
-      //mWake->SetParameters(mWakeParams);
+      Triton::WakeGeneratorParameters params;
+      params.length = 9.144;
+      params.beamWidth = 4.0;
+      params.sprayEffects = false;
+      mWake = new Triton::WakeGenerator(ocean, params);
    }
    else {
       F32 time = Sim::getCurrentTime() / 1000.0;
