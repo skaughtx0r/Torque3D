@@ -141,7 +141,7 @@ bool GuiInputCtrl::onInputEvent( const InputEventInfo &event )
          const char* actionString = ActionMap::buildActionString( &event );
 
 		 //Con::executef( this, "onInputEvent", deviceString, actionString, "1" );
-		 onInputEvent_callback(deviceString, actionString, 1);
+		 onInputEvent_callback(deviceString, actionString, event.fValue);
 
          return( true );
       }
