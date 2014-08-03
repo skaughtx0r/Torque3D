@@ -54,6 +54,7 @@ class MoveManager;
 class MoveList;
 struct Move;
 struct AuthInfo;
+struct GameConnectionPacket;
 
 #define GameString TORQUE_APP_NAME
 
@@ -69,6 +70,9 @@ private:
    SimObjectPtr<GameBase> mCameraObject;
    U32 mDataBlockSequence;
    char mDisconnectReason[256];
+
+   // Client -> server packet
+   GameConnectionPacket *mGCPacket;
 
    U32  mMissionCRC;             // crc of the current mission file from the server
 

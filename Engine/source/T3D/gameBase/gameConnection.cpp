@@ -38,6 +38,7 @@
 #include "T3D/gameBase/gameConnectionEvents.h"
 #include "console/engineAPI.h"
 #include "math/mTransform.h"
+#include "T3D/gameBase/gameConnectionPacket.h"
 
 #ifdef TORQUE_HIFI_NET
    #include "T3D/gameBase/hifi/hifiMoveList.h"
@@ -227,6 +228,9 @@ GameConnection::GameConnection()
    mAddPitchToAbsRot = false;
 
    clearDisplayDevice();
+
+   // allocate GameConnectionPacket
+   mGCPacket = new GameConnectionPacket();
 }
 
 GameConnection::~GameConnection()
@@ -236,6 +240,9 @@ GameConnection::~GameConnection()
       dFree(mConnectArgv[i]);
    dFree(mJoinPassword);
    delete mMoveList;
+
+   // delete GameConnectionPacket
+   delete mGCPacket;
 }
 
 //----------------------------------------------------------------------------
@@ -1139,6 +1146,9 @@ void GameConnection::readPacket(BitStream *bstream)
    {
       mMoveList->serverReadMovePacket(bstream);
 
+      // read control object packet
+      mGCPacket->receive(bstream, getControlObject());
+
       mCameraPos = bstream->readFlag() ? 1.0f : 0.0f;
       if (bstream->readFlag())
          mControlForceMismatch = true;
@@ -1196,6 +1206,9 @@ void GameConnection::writePacket(BitStream *bstream, PacketNotify *note)
    if (isConnectionToServer())
    {
       mMoveList->clientWriteMovePacket(bstream);
+
+      // send control object packet
+      mGCPacket->send(bstream, getControlObject());
 
       bstream->writeFlag(mCameraPos == 1);
 

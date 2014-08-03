@@ -118,6 +118,7 @@ bool PRELOAD_DB(U32 & id, SimDataBlock **, bool server, const char * clientMissi
 
 //----------------------------------------------------------------------------
 class GameConnection;
+struct GameConnectionPacket;
 class WaterObject;
 class MoveList;
 
@@ -372,6 +373,15 @@ public:
    virtual U32 getPacketDataChecksum( GameConnection *conn );
    ///@}
 
+   /// Sending client to server
+   ///@{
+
+   /// Called on the client
+   virtual void getClientPacket(GameConnectionPacket *packet) {}
+
+   /// Called on the server
+   virtual void receiveClientPacket(GameConnectionPacket *packet) {}
+   ///@}
 
    /// @name Mounted objects ( overrides )
    /// @{

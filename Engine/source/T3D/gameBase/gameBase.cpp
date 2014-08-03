@@ -28,6 +28,7 @@
 #include "core/stream/bitStream.h"
 #include "sim/netConnection.h"
 #include "T3D/gameBase/gameConnection.h"
+#include "T3D/gameBase/gameConnectionPacket.h"
 #include "math/mathIO.h"
 #include "T3D/gameBase/moveManager.h"
 #include "T3D/gameBase/gameProcess.h"
