@@ -277,6 +277,7 @@ void TritonOcean::initTriton()
 	mEnvironment->SetLicenseCode(TRITON_LICENSE_NAME, TRITON_LICENSE_KEY);
 	mEnvironment->SetSeaLevel(getPosition().z);
    mEnvironment->GetRandomNumberGenerator()->SetRandomSeed(1337);
+   mEnvironment->SetWorldUnits(5.0);
 	mGlobalWind.SetWind(mGlobalWindSpeed, mGlobalWindDirection);
    mOcean = Triton::Ocean::Create(mEnvironment, Triton::PIERSON_MOSKOWITZ, true, false);
 	mOcean->SetChoppiness(mWaveChoppiness);
