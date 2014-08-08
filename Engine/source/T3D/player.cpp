@@ -251,6 +251,9 @@ PlayerData::PlayerData()
    renderFirstPerson = true;
    firstPersonShadows = false;
 
+   // andrewmac: Physics Collision Flag
+   physicsCollision = true;
+
    // Used for third person image rendering
    imageAnimPrefix = StringTable->insert("");
 
@@ -696,6 +699,11 @@ void PlayerData::initPersistFields()
    endGroup( "Camera" );
 
    addGroup( "Movement" );
+
+      // andrewmac: Physics Collision Flag
+      addField( "physicsCollision", TypeBool, Offset(physicsCollision, PlayerData),
+         "@brief Flag controlling whether standard torque collision is"
+		 " used or collision enhanced with an active physics plugin.\n\n" );
 
       addField( "maxStepHeight", TypeF32, Offset(maxStepHeight, PlayerData),
          "@brief Maximum height the player can step up.\n\n"
@@ -1185,6 +1193,9 @@ void PlayerData::packData(BitStream* stream)
 
    stream->writeFlag(renderFirstPerson);
    stream->writeFlag(firstPersonShadows);
+
+   // andrewmac: Physics Collision Flag
+   stream->writeFlag(physicsCollision);
    
    stream->write(minLookAngle);
    stream->write(maxLookAngle);
@@ -1367,6 +1378,9 @@ void PlayerData::unpackData(BitStream* stream)
 
    renderFirstPerson = stream->readFlag();
    firstPersonShadows = stream->readFlag();
+
+   // andrewmac: Physics Collision Flag
+   physicsCollision = stream->readFlag();
 
    stream->read(&minLookAngle);
    stream->read(&maxLookAngle);
@@ -2112,7 +2126,8 @@ void Player::processTick(const Move* move)
       PROFILE_START(Player_PhysicsSection);
       if ( isServerObject() || didRenderLastRender() || getControllingClient() )
       {
-         if ( !mPhysicsRep )
+		  // andrewmac: Physics Collision Flag
+		  if ( !mPhysicsRep || !mDataBlock->physicsCollision )
          {
             if ( isMounted() )
             {
@@ -2474,8 +2489,8 @@ void Player::setPose( Pose pose )
    onScaleChanged();
 
    // Resize the PhysicsPlayer rep. should we have one
-   if ( mPhysicsRep )
-      mPhysicsRep->setSpacials( getPosition(), boxSize );
+   //if ( mPhysicsRep )
+   //   mPhysicsRep->setSpacials( getPosition(), boxSize );
 
    if ( isServerObject() )
       mDataBlock->onPoseChange_callback( this, EngineMarshallData< PlayerPose >(oldPose), EngineMarshallData< PlayerPose >(mPose));
@@ -2769,7 +2784,9 @@ void Player::updateMove(const Move* move)
       // the player to "rest" on the ground.
       // However, no need to do that if we're using a physics library.
       // It will take care of itself.
-      if (!mPhysicsRep)
+
+	  // andrewmac: Physics Collision Flag
+	  if ( !mPhysicsRep || !mDataBlock->physicsCollision )
       {
          F32 vd = -mDot(acc,contactNormal);
          if (vd > 0.0f) {
@@ -2813,7 +2830,8 @@ void Player::updateMove(const Move* move)
             pvl = pv.len();
          }
       }
-      else if (!mPhysicsRep)
+	  // andrewmac: Physics Collision Flag
+	  else if ( !mPhysicsRep || !mDataBlock->physicsCollision )
       {
          // We only do this if we're not using a physics library.  The
          // library will take care of itself.
@@ -3278,7 +3296,8 @@ bool Player::canCrouch()
 		return true;
 
    // Do standard Torque physics test here!
-   if ( !mPhysicsRep )
+   // andrewmac: Physics Collision Flag
+	if ( !mPhysicsRep || !mDataBlock->physicsCollision )
    {
       F32 radius;
 
@@ -3329,7 +3348,8 @@ bool Player::canStand()
 		return true;
 
    // Do standard Torque physics test here!
-   if ( !mPhysicsRep )
+   // andrewmac: Physics Collision Flag
+   if ( !mPhysicsRep || !mDataBlock->physicsCollision )
    {
       F32 radius;
 
@@ -3386,7 +3406,8 @@ bool Player::canProne()
       return false;
 
    // Do standard Torque physics test here!
-   if ( !mPhysicsRep )
+   // andrewmac: Physics Collision Flag
+   if ( !mPhysicsRep || !mDataBlock->physicsCollision )
       return true;
 
 	// We are already in this pose, so don't test it again...
@@ -4949,8 +4970,8 @@ bool Player::updatePos(const F32 travelTime)
 
    // DEBUG:
    //Point3F savedVelocity = mVelocity;
-
-   if ( mPhysicsRep )
+   // andrewmac: Physics Collision Flag
+   if ( mPhysicsRep && mDataBlock->physicsCollision )
    {
       static CollisionList collisionList;
       collisionList.clear();
@@ -5153,7 +5174,8 @@ void Player::findContact( bool *run, bool *jump, VectorF *contactNormal )
    SceneObject *contactObject = NULL;
 
    Vector<SceneObject*> overlapObjects;
-   if ( mPhysicsRep )
+   // andrewmac: Physics Collision Flag
+   if ( mPhysicsRep && mDataBlock->physicsCollision )
       mPhysicsRep->findContact( &contactObject, contactNormal, &overlapObjects );
    else
       _findContact( &contactObject, contactNormal, &overlapObjects );
