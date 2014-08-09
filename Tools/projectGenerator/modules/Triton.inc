@@ -78,7 +78,7 @@ beginModule( 'Triton' );
    addIncludePath( $TRITON_PATH . "/Public Headers" );
 
    // Libs
-   addProjectLibDir( $TRITON_PATH . "/lib/vc10/win32" );
+   addProjectLibDir( $TRITON_PATH . "/lib/vc12/win32" );
    addProjectLibInput( "Triton-MT.lib", "Triton-MTD.lib" );
    addProjectIgnoreDefaultLib( "MSVCRT" );
    

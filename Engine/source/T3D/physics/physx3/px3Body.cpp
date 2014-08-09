@@ -458,3 +458,17 @@ void Px3Body::applyImpulse( const Point3F &origin, const Point3F &force )
 
 }
 
+void Px3Body::applyForce(const Point3F &origin, const Point3F &force)
+{
+	AssertFatal(mActor, "Px3Body::applyImpulse - The actor is null!");
+
+	mWorld->lockScene();
+	physx::PxRigidDynamic *actor = mActor->is<physx::PxRigidDynamic>();
+	if (mIsEnabled && isDynamic())
+		physx::PxRigidBodyExt::addForceAtPos(*actor, px3Cast<physx::PxVec3>(force),
+		px3Cast<physx::PxVec3>(origin),
+		physx::PxForceMode::eFORCE);
+
+	mWorld->unlockScene();
+
+}

@@ -117,6 +117,7 @@ public:
                               F32 staticFriction );
    virtual void applyCorrection( const MatrixF &xfm );
    virtual void applyImpulse( const Point3F &origin, const Point3F &force );
+   virtual void applyForce( const Point3F &origin, const Point3F &force );
 };
 
 #endif // _PX3BODY_H_
