@@ -179,14 +179,20 @@ TerrainMaterial* TerrainMaterial::getWarningMaterial()
 
 void TerrainMaterial::updatePhysicsMaterial()
 {
-   AssertFatal(mPhysicsMaterial,"TerrainMaterial::updatePhysicsMaterial");
-   mPhysicsMaterial->update(mRestitution,mStaticFriction,mDynamicFriction,(PhysicsMaterial::CombineMode)mFrictionCombine,(PhysicsMaterial::CombineMode)mRestitutionCombine);
+	if (PHYSICSMGR)
+	{
+		AssertFatal(mPhysicsMaterial, "TerrainMaterial::updatePhysicsMaterial");
+		mPhysicsMaterial->update(mRestitution, mStaticFriction, mDynamicFriction, (PhysicsMaterial::CombineMode)mFrictionCombine, (PhysicsMaterial::CombineMode)mRestitutionCombine);
+	}
 }
 
 void TerrainMaterial::createPhysicsMaterial()
 {
-   if(!mPhysicsMaterial)
-      mPhysicsMaterial = PHYSICSMGR->createMaterial(mRestitution,mStaticFriction,mDynamicFriction);
+	if (PHYSICSMGR)
+	{
+		if (!mPhysicsMaterial)
+			mPhysicsMaterial = PHYSICSMGR->createMaterial(mRestitution, mStaticFriction, mDynamicFriction);
+	}
 }
 
 TerrainMaterial* TerrainMaterial::findOrCreate( const char *nameOrPath )
