@@ -279,7 +279,7 @@ void TritonOcean::initTriton()
    mEnvironment->GetRandomNumberGenerator()->SetRandomSeed(1337);
    mEnvironment->SetWorldUnits(5.0);
 	mGlobalWind.SetWind(mGlobalWindSpeed, mGlobalWindDirection);
-   mOcean = Triton::Ocean::Create(mEnvironment, Triton::PIERSON_MOSKOWITZ, true, false);
+   mOcean = Triton::Ocean::Create(mEnvironment, Triton::TESSENDORF, true, false);
 	mOcean->SetChoppiness(mWaveChoppiness);
    if(isServerObject())
       mEnvironment->AddWindFetch(mGlobalWind);
