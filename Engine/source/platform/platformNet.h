@@ -28,7 +28,7 @@
 #include "core/util/journal/journaledSignal.h"
 
 #ifndef MAXPACKETSIZE
-#define MAXPACKETSIZE 1500
+#define MAXPACKETSIZE 2000
 #endif
 
 typedef S32 NetConnectionId;
