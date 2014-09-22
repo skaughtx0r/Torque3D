@@ -34,18 +34,18 @@ class WebView;
 
 // This is meant only for internal use, see GuiWebCtrl.h for some documentation
 
-class GuiWebCore : public Thread
+class CefCore : public Thread
 {
 
 public:
 
-   static GuiWebCore* get() { return sInstance; }
+   static CefCore* get() { return sInstance; }
 
    void lock();
    void unlock();
    
-   GuiWebCore(ThreadRunFunction func = 0);
-   ~GuiWebCore();
+   CefCore(ThreadRunFunction func = 0);
+   ~CefCore();
 
    void CreateWebView(String url, CefRefPtr<WebView> webView);
 
@@ -59,7 +59,7 @@ private:
    Semaphore mSemaphore;
    Semaphore mStopSemaphore;
 
-   static GuiWebCore* sInstance;
+   static CefCore* sInstance;
 
    U32 mLockCount;
 

@@ -25,18 +25,18 @@
    #endif
 #endif
 
-GuiWebCore* GuiWebCore::sInstance = NULL;
+CefCore* CefCore::sInstance = NULL;
 
 void WebThreadFunc(void* self)
 {
-   GuiWebCore::get()->run();
+   CefCore::get()->run();
 }
 
 MODULE_BEGIN( GuiWebCore )
 
 MODULE_INIT
 {
-   GuiWebCore* core = new GuiWebCore(WebThreadFunc);
+   CefCore* core = new CefCore(WebThreadFunc);
    core->start();
 }
 
@@ -44,18 +44,18 @@ MODULE_SHUTDOWN_AFTER(Sim)
 
 MODULE_SHUTDOWN
 {
-   GuiWebCore::get()->exit();
+   CefCore::get()->exit();
 
-   if (!GuiWebCore::get()->running())
+   if (!CefCore::get()->running())
    {
-      delete GuiWebCore::get();
+      delete CefCore::get();
    }
 }
 
 MODULE_END;
 
 
-GuiWebCore::GuiWebCore(ThreadRunFunction func) : Thread(func)
+CefCore::CefCore(ThreadRunFunction func) : Thread(func)
 {
    AssertISV(!sInstance, "Multiple Web Cores!");
    sInstance = this;
@@ -63,12 +63,12 @@ GuiWebCore::GuiWebCore(ThreadRunFunction func) : Thread(func)
 
 }
 
-GuiWebCore::~GuiWebCore()
+CefCore::~CefCore()
 {
    
 }
 
-void GuiWebCore::exit()
+void CefCore::exit()
 {
    CefPostTask(TID_UI, base::Bind(&CefQuitMessageLoop));
 
@@ -84,7 +84,7 @@ void GuiWebCore::exit()
    //join();
 }
 
-bool GuiWebCore::running()
+bool CefCore::running()
 {
    mMutex.lock();
 
@@ -96,7 +96,7 @@ bool GuiWebCore::running()
 
 }
 
-void GuiWebCore::run()
+void CefCore::run()
 {
    CefMainArgs main_args;
 
@@ -116,7 +116,7 @@ void GuiWebCore::run()
    //CefShutdown();
 }
 
-void GuiWebCore::CreateWebView(String url, CefRefPtr<WebView> webView)
+void CefCore::CreateWebView(String url, CefRefPtr<WebView> webView)
 {
    CefWindowInfo window_info;
    CefBrowserSettings browserSettings;

@@ -33,7 +33,6 @@
 
 #include "gfx/gfxTextureProfile.h"
 
-#include "gui/web/cefCore.h"
 #include "cef/webView.h"
 
 class Buffer
@@ -146,6 +145,7 @@ class GuiWebCtrl : public GuiControl
       void onRender(Point2I offset, const RectI &updateRect);
 
       //Input
+      //Mouse
       virtual void onMouseUp(const GuiEvent &event);
       virtual void onMouseDown(const GuiEvent &event);
       virtual void onMouseMove(const GuiEvent &event);
@@ -158,6 +158,11 @@ class GuiWebCtrl : public GuiControl
       virtual void onMiddleMouseDragged(const GuiEvent &event);
       virtual bool onMouseWheelUp(const GuiEvent &event);
       virtual bool onMouseWheelDown(const GuiEvent &event);
+
+      //Keyboard
+      virtual bool onKeyDown(const GuiEvent &event);
+      virtual bool onKeyUp(const GuiEvent &event);
+      virtual bool onKeyRepeat(const GuiEvent &event);
 
       DECLARE_CONOBJECT(GuiWebCtrl);
       DECLARE_CATEGORY( "Gui Images" );

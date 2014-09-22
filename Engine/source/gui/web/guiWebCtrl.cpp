@@ -21,9 +21,9 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-//#include "gui/controls/guiWebCtrl.h"
 #include "gui/core/guiCanvas.h"
 #include "gui/web/guiWebCtrl.h"
+#include "cef/cefCore.h"
 
 #include "console/console.h"
 #include "console/consoleTypes.h"
@@ -108,7 +108,7 @@ bool GuiWebCtrl::onAdd()
    mBuffer1 = new Buffer();
    mBuffer2 = new Buffer();
    mGuiWebView = new GuiWebView(this);
-   GuiWebCore::get()->CreateWebView(mUrl, mGuiWebView);
+   CefCore::get()->CreateWebView(mUrl, mGuiWebView);
    //setBounds(0, 0, 512, 512);
    return Parent::onAdd();
 }
@@ -312,6 +312,7 @@ void GuiWebCtrl::OnCursorChange(CefRefPtr<CefBrowser> browser, CefCursorHandle c
 }
 
 //Input
+//Keyboard
 void GuiWebCtrl::onMouseUp(const GuiEvent &event)
 {
    CefMouseEvent evtMouse;
@@ -443,7 +444,28 @@ bool GuiWebCtrl::onMouseWheelDown(const GuiEvent &event)
    return true;
 }
 
-//
+//-----------------------------------------------------------------------------
+
+bool GuiWebCtrl::onKeyDown(const GuiEvent &event)
+{
+   return Parent::onKeyDown(event);
+}
+
+//-----------------------------------------------------------------------------
+
+bool GuiWebCtrl::onKeyUp(const GuiEvent &event)
+{
+   return Parent::onKeyUp(event);
+}
+
+//-----------------------------------------------------------------------------
+
+bool GuiWebCtrl::onKeyRepeat(const GuiEvent &event)
+{
+   return Parent::onKeyRepeat(event);
+}
+
+//-----------------------------------------------------------------------------
 
 static ConsoleDocFragment _sGuiWebCtrlSetBitmap1(
    "@brief Assign an image to the control.\n\n"
