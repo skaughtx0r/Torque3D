@@ -82,8 +82,10 @@ void GuiWebView::Destroy()
 void GuiWebView::OnAfterCreated(CefRefPtr<CefBrowser> browser)
 {
    WebView::OnAfterCreated(browser);
-   if (mWebCtrl->isAwake())
+   if (mWebCtrl->isAwake()) {
       GetBrowser()->GetHost()->WasHidden(false);
+      GetBrowser()->GetHost()->SendFocusEvent(true);
+   }
    else
       GetBrowser()->GetHost()->WasHidden(true);
 }
@@ -155,8 +157,10 @@ bool GuiWebCtrl::onWake()
    if (! Parent::onWake())
       return false;
    setActive(true);
-   if (mGuiWebView && mGuiWebView->GetBrowser())
+   if (mGuiWebView && mGuiWebView->GetBrowser()) {
       mGuiWebView->GetBrowser()->GetHost()->WasHidden(false);
+      mGuiWebView->GetBrowser()->GetHost()->SendFocusEvent(true);
+   }
    return true;
 }
 
@@ -315,7 +319,17 @@ void GuiWebCtrl::OnCursorChange(CefRefPtr<CefBrowser> browser, CefCursorHandle c
 //Keyboard
 void GuiWebCtrl::onMouseUp(const GuiEvent &event)
 {
+   if (!mActive)
+   {
+      Parent::onMouseUp(event);
+      return;
+   }
+
+   mouseUnlock();
+   setFirstResponder();
+
    CefMouseEvent evtMouse;
+   evtMouse.modifiers = EVENTFLAG_LEFT_MOUSE_BUTTON;
    evtMouse.x = event.mousePoint.x;
    evtMouse.y = event.mousePoint.y;
    mGuiWebView->GetBrowser()->GetHost()->SendMouseClickEvent(evtMouse, CefBrowserHost::MouseButtonType::MBT_LEFT, true, event.mouseClickCount);
@@ -325,8 +339,17 @@ void GuiWebCtrl::onMouseUp(const GuiEvent &event)
 
 void GuiWebCtrl::onMouseDown(const GuiEvent &event)
 {
-   Parent::onMouseDown(event);
+   if (!mActive)
+   {
+      Parent::onMouseDown(event);
+      return;
+   }
+
+   setFirstResponder();
+   mouseLock();
+
    CefMouseEvent evtMouse;
+   evtMouse.modifiers = EVENTFLAG_LEFT_MOUSE_BUTTON;
    evtMouse.x = event.mousePoint.x;
    evtMouse.y = event.mousePoint.y;
    mGuiWebView->GetBrowser()->GetHost()->SendMouseClickEvent(evtMouse, CefBrowserHost::MouseButtonType::MBT_LEFT, false, event.mouseClickCount);
@@ -338,6 +361,7 @@ void GuiWebCtrl::onMouseDragged(const GuiEvent &event)
 {
    Parent::onMouseMove(event);
    CefMouseEvent evtMouse;
+   evtMouse.modifiers = EVENTFLAG_LEFT_MOUSE_BUTTON;
    evtMouse.x = event.mousePoint.x;
    evtMouse.y = event.mousePoint.y;
    mGuiWebView->GetBrowser()->GetHost()->SendMouseMoveEvent(evtMouse, false);
@@ -348,6 +372,7 @@ void GuiWebCtrl::onMouseDragged(const GuiEvent &event)
 void GuiWebCtrl::onRightMouseUp(const GuiEvent &event)
 {
    CefMouseEvent evtMouse;
+   evtMouse.modifiers = EVENTFLAG_RIGHT_MOUSE_BUTTON;
    evtMouse.x = event.mousePoint.x;
    evtMouse.y = event.mousePoint.y;
    mGuiWebView->GetBrowser()->GetHost()->SendMouseClickEvent(evtMouse, CefBrowserHost::MouseButtonType::MBT_RIGHT, true, event.mouseClickCount);
@@ -359,6 +384,7 @@ void GuiWebCtrl::onRightMouseDown(const GuiEvent &event)
 {
    Parent::onRightMouseDown(event);
    CefMouseEvent evtMouse;
+   evtMouse.modifiers = EVENTFLAG_RIGHT_MOUSE_BUTTON;
    evtMouse.x = event.mousePoint.x;
    evtMouse.y = event.mousePoint.y;
    mGuiWebView->GetBrowser()->GetHost()->SendMouseClickEvent(evtMouse, CefBrowserHost::MouseButtonType::MBT_RIGHT, false, event.mouseClickCount);
@@ -370,6 +396,7 @@ void GuiWebCtrl::onRightMouseDragged(const GuiEvent &event)
 {
    Parent::onMouseMove(event);
    CefMouseEvent evtMouse;
+   evtMouse.modifiers = EVENTFLAG_RIGHT_MOUSE_BUTTON;
    evtMouse.x = event.mousePoint.x;
    evtMouse.y = event.mousePoint.y;
    mGuiWebView->GetBrowser()->GetHost()->SendMouseMoveEvent(evtMouse, false);
@@ -380,6 +407,7 @@ void GuiWebCtrl::onRightMouseDragged(const GuiEvent &event)
 void GuiWebCtrl::onMiddleMouseUp(const GuiEvent &event)
 {
    CefMouseEvent evtMouse;
+   evtMouse.modifiers = EVENTFLAG_MIDDLE_MOUSE_BUTTON;
    evtMouse.x = event.mousePoint.x;
    evtMouse.y = event.mousePoint.y;
    mGuiWebView->GetBrowser()->GetHost()->SendMouseClickEvent(evtMouse, CefBrowserHost::MouseButtonType::MBT_MIDDLE, true, event.mouseClickCount);
@@ -391,6 +419,7 @@ void GuiWebCtrl::onMiddleMouseDown(const GuiEvent &event)
 {
    Parent::onMiddleMouseDown(event);
    CefMouseEvent evtMouse;
+   evtMouse.modifiers = EVENTFLAG_MIDDLE_MOUSE_BUTTON;
    evtMouse.x = event.mousePoint.x;
    evtMouse.y = event.mousePoint.y;
    mGuiWebView->GetBrowser()->GetHost()->SendMouseClickEvent(evtMouse, CefBrowserHost::MouseButtonType::MBT_MIDDLE, false, event.mouseClickCount);
@@ -402,6 +431,7 @@ void GuiWebCtrl::onMiddleMouseDragged(const GuiEvent &event)
 {
    Parent::onMouseMove(event);
    CefMouseEvent evtMouse;
+   evtMouse.modifiers = EVENTFLAG_MIDDLE_MOUSE_BUTTON;
    evtMouse.x = event.mousePoint.x;
    evtMouse.y = event.mousePoint.y;
    mGuiWebView->GetBrowser()->GetHost()->SendMouseMoveEvent(evtMouse, false);
@@ -446,23 +476,105 @@ bool GuiWebCtrl::onMouseWheelDown(const GuiEvent &event)
 
 //-----------------------------------------------------------------------------
 
+void GuiWebCtrl::setFirstResponder()
+{
+   Parent::setFirstResponder();
+
+   GuiCanvas *root = getRoot();
+   if (root) {
+      root->setNativeAcceleratorsEnabled(false);
+   }
+}
+
+//-----------------------------------------------------------------------------
+
+void GuiWebCtrl::onLoseFirstResponder()
+{
+   GuiCanvas *root = getRoot();
+   if (root) {
+      root->setNativeAcceleratorsEnabled(true);
+   }
+
+   Parent::onLoseFirstResponder();
+}
+
+//-----------------------------------------------------------------------------
+
 bool GuiWebCtrl::onKeyDown(const GuiEvent &event)
 {
-   return Parent::onKeyDown(event);
+   if (!isActive())
+      return false;
+
+   U16 ascii = 0;
+   U16 keyCode = TranslateKeyCodeToOS(event.keyCode);
+   
+   if (event.modifier & SI_SHIFT)
+      ascii = Input::getAscii(event.keyCode, STATE_UPPER);
+   else
+      ascii = Input::getAscii(event.keyCode, STATE_LOWER);
+
+   CefKeyEvent keyEvent;
+   keyEvent.character = ascii;
+   if (ascii) {
+      BYTE VkCode = LOBYTE(VkKeyScanA(ascii));
+      UINT scanCode = MapVirtualKey(VkCode, MAPVK_VK_TO_VSC);
+      keyEvent.native_key_code = (scanCode << 16) | 1;
+      keyEvent.windows_key_code = VkCode;
+   }
+   else {
+      keyEvent.windows_key_code = keyCode;
+   }
+
+   keyEvent.type = KEYEVENT_RAWKEYDOWN;
+   mGuiWebView->GetBrowser()->GetHost()->SendKeyEvent(keyEvent);
+   if (ascii) {
+      keyEvent.type = KEYEVENT_CHAR;
+      keyEvent.windows_key_code = ascii;
+      mGuiWebView->GetBrowser()->GetHost()->SendKeyEvent(keyEvent);
+   }
+
+   return true;
 }
 
 //-----------------------------------------------------------------------------
 
 bool GuiWebCtrl::onKeyUp(const GuiEvent &event)
 {
-   return Parent::onKeyUp(event);
+   if (!isActive())
+      return false;
+
+   U16 ascii = 0;
+   U16 keyCode = TranslateKeyCodeToOS(event.keyCode);
+
+   if (event.modifier & SI_SHIFT)
+      ascii = Input::getAscii(event.keyCode, STATE_UPPER);
+   else
+      ascii = Input::getAscii(event.keyCode, STATE_LOWER);
+
+   CefKeyEvent keyEvent;
+   keyEvent.character = ascii;
+   if (ascii) {
+      BYTE VkCode = LOBYTE(VkKeyScanA(ascii));
+      UINT scanCode = MapVirtualKey(VkCode, MAPVK_VK_TO_VSC);
+      keyEvent.native_key_code = (scanCode << 16) | 1;
+      keyEvent.native_key_code |= 0xC0000000;
+      keyEvent.windows_key_code = VkCode;
+   }
+   else {
+      keyEvent.windows_key_code = keyCode;
+   }
+
+   keyEvent.type = KEYEVENT_KEYUP;
+   mGuiWebView->GetBrowser()->GetHost()->SendKeyEvent(keyEvent);
+
+   return true;
 }
 
 //-----------------------------------------------------------------------------
 
 bool GuiWebCtrl::onKeyRepeat(const GuiEvent &event)
 {
-   return Parent::onKeyRepeat(event);
+   return onKeyDown(event);
 }
 
 //-----------------------------------------------------------------------------

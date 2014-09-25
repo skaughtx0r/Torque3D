@@ -160,6 +160,8 @@ class GuiWebCtrl : public GuiControl
       virtual bool onMouseWheelDown(const GuiEvent &event);
 
       //Keyboard
+      virtual void setFirstResponder();
+      virtual void onLoseFirstResponder();
       virtual bool onKeyDown(const GuiEvent &event);
       virtual bool onKeyUp(const GuiEvent &event);
       virtual bool onKeyRepeat(const GuiEvent &event);
