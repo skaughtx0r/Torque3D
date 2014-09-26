@@ -91,7 +91,7 @@ void GuiWebView::OnAfterCreated(CefRefPtr<CefBrowser> browser)
 }
 
 GuiWebCtrl::GuiWebCtrl(void)
- : mUrl("http://www.youtube.com"),
+ : mUrl("about:blank"),
    mStartPoint( 0, 0 ),
    mTextureObject(512, 512, GFXFormatR8G8B8A8, &GFXWebGuiProfile, "WebGuiTexture"),
    mBuffer1(NULL),
@@ -111,7 +111,6 @@ bool GuiWebCtrl::onAdd()
    mBuffer2 = new Buffer();
    mGuiWebView = new GuiWebView(this);
    CefCore::get()->CreateWebView(mUrl, mGuiWebView);
-   //setBounds(0, 0, 512, 512);
    return Parent::onAdd();
 }
 

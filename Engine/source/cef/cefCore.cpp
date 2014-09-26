@@ -8,14 +8,15 @@
 #include "console/consoleTypes.h"
 #include "core/module.h"
 
-#include "cefCore.h"
+#include "cef/cefCore.h"
 #include "webApp.h"
 #include "cef/webView.h"
+#include "cef/AssetResourceHandler.h"
 
 #include "platformWin32/platformWin32.h"
 
-#include "include/base/cef_bind.h"
-#include "include/wrapper/cef_closure_task.h"
+#include <include/base/cef_bind.h>
+#include <include/wrapper/cef_closure_task.h>
 
 #ifdef WIN32
    #ifdef _DEBUG
@@ -107,9 +108,13 @@ void CefCore::run()
    settings.windowless_rendering_enabled = true;
    settings.context_safety_implementation = true;
    settings.remote_debugging_port = 1337;
+   settings.log_severity = LOGSEVERITY_VERBOSE;
    CefString(&settings.browser_subprocess_path).FromASCII(SUBPROC_NAME);   
 
    CefInitialize(main_args, settings, app, NULL);
+
+   CefRefPtr<AssetSchemeHandlerFactory> assetSchemeFactory(new AssetSchemeHandlerFactory());
+   CefRegisterSchemeHandlerFactory("asset", "game", assetSchemeFactory);
 
    CefRunMessageLoop();
 
